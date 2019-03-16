@@ -26,8 +26,9 @@ public:
     ChartCalib() : boardSize(8, 6) {}
     
     Mat homo;
+    Mat homoshow;
     
-    void calib(const Mat& _chess)
+    void calib(const Mat& _chess, const Size& showSize, float scale = 0.1)
     {
         Mat chess = _chess;
         if(chess.channels() == 3)
@@ -62,11 +63,21 @@ public:
         
         homo = findHomography(cam, uni, CV_RANSAC);
         
+        vector<Point2f> unishow;
+        unishow.push_back(Point2f(showSize.width*(0.5f - scale), showSize.height*(0.5f - scale)));
+        unishow.push_back(Point2f(showSize.width*(0.5f + scale), showSize.height*(0.5f - scale)));
+        unishow.push_back(Point2f(showSize.width*(0.5f + scale), showSize.height*(0.5f + scale)));
+        unishow.push_back(Point2f(showSize.width*(0.5f - scale), showSize.height*(0.5f + scale)));
+        
+        homoshow = findHomography(cam, unishow, CV_RANSAC);
+        
 //        cv::drawChessboardCorners(chess, boardSize, chesspts, found);
 //        imshow("a", chess);
 //        waitKey(0);
 //        cout<<"hi: "<<chesspts.size()<<endl;
     }
+    
+    
 };
 
 #endif /* CHARTCALIB_H */

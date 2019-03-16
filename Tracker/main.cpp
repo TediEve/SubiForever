@@ -36,32 +36,74 @@ int main(int argc, char** argv) {
     cv::VideoCapture cap;
 //     cap.open("./VID_20190315_222839.mp4");
     cap.open("./b4.h264");
+//    cap.open("./vid1.h264");
     
-//    Mat chess = imread("chess.jpeg");
-//    cap>>chess;
-//    pyrDown(chess, chess);
-//    ChartCalib calib;
-//    calib.calib(chess);
-//    
-//    cout<<calib.homo<<endl;
-//    cv::perspectiveTransform(chess, chess, calib.homo);
-//    imshow("chess", chess);
-//    waitKey(0);
-//    
-//    return 0;
+    ChartCalib calib;
+    
+    if(false)
+    {
+        Mat chess;
+        cap>>chess;
+        pyrDown(chess, chess);
+        calib.calib(chess, Size(chess.size()), 0.04f);
+        cout<<calib.homo<<endl;
+    //    cv::perspectiveTransform(chess, chess, calib.homo);
+        cv::warpPerspective(chess, chess, calib.homoshow, chess.size());
+        imshow("chess", chess);
+        waitKey(0);
+
+        return 0;
+    }
     
 //    AccBG background;
     
     FeatureFinder ffModel;
     FeatureFinder ffCurrent;
     
+    Mat mod;
     {
-        Mat tmp;
-        for(int i = 0; i < 100; ++i)
-            cap>>tmp;
-    }
+        string fn; fn = "/home/thundy/work/projects/SubiForever/CarModel/poses/";
+        fn += "video7.h264";
+//        fn += "video.h264";
+        /*Mat */mod = imread(fn + ".jpg");
+        fn += "_mask";
+        pyrDown(mod, mod);
+        pyrDown(mod, mod);
+        Mat modmask = imread(fn + ".jpg", 0);
+        
+        int erosion_size = 2;
+        Mat element = getStructuringElement( MORPH_RECT, Size( 2*erosion_size + 1, 2*erosion_size+1 ), Point( erosion_size, erosion_size ) );
 
-    constexpr int ds = 2;
+        for(int i = 0; i < 2; ++i)
+            erode(modmask, modmask, element);
+        
+        for(int i = 0; i < 4; ++i)
+            dilate(modmask, modmask, element);
+        
+        resize(modmask, modmask, mod.size());
+
+        for(int y = 0; y < mod.rows; ++y)
+        for(int x = 0; x < mod.cols; ++x)
+            if(modmask.at<uint8_t>(y, x) == 0) mod.at<Vec3b>(y, x) = Vec3b(0, 0, 0);
+        
+        ffModel.detect(mod);
+        ffModel.toFile("carModel.orb");
+        
+        ffModel.showMatches(mod);
+        
+        imshow("mod", mod);
+        waitKey(10);
+    }
+    
+//    {
+//        Mat tmp;
+//        for(int i = 0; i < 100; ++i)
+//            cap>>tmp;
+//    }
+    
+    vector<Point2f> tracked;
+
+    constexpr int ds = 1;
     constexpr int dsm = pow(2, ds);
     Mat rgb, rgbSm, yuvSm, carMask;
     while(true)
@@ -82,7 +124,7 @@ int main(int argc, char** argv) {
             carMask = Mat(rgbSm.size(), CV_8UC1, Scalar(0));
         carMask = 0;
         
-//        vector<Point> pts;
+        vector<Point> pts;
         float cx = 0.0f, cy = 0.0f;
         int cnum = 0;
         for(int y = 0; y < yuvSm.rows; ++y)
@@ -96,7 +138,7 @@ int main(int argc, char** argv) {
                 cx += x;
                 cy += y;
                 ++cnum;
-                // pts.push_back(Point(cx, cy));
+                pts.push_back(Point(x, y));
             }
             //else if(abs(col[0] - 40) < 50 && abs(col[2] - 127) < 10 && abs(col[1] - 127) < 40)
             //{}
@@ -121,6 +163,20 @@ int main(int argc, char** argv) {
         
 //        Moments mnts = moments(mask, true);
         
+        RotatedRect rrect = minAreaRect(pts);
+        cout<<rrect.angle<<endl;
+        rrect.angle = rrect.angle/180.0f*M_PI;
+        
+        Point2f pts2[4];
+        rrect.points(pts2);
+        if(rrect.size.width < rrect.size.height)
+//        if(abs(pts2[0].x - pts2[1].x) > abs(pts2[0].y - pts2[1].y))
+            rrect.angle += M_PI/2;
+//        cout<<endl;
+        
+        line(rgb, Point(cx - cos(rrect.angle)*100, cy - sin(rrect.angle)*100)*dsm, Point(cx + cos(rrect.angle)*100, cy + sin(rrect.angle)*100)*dsm, Scalar(255, 255, 0), 2, CV_AA);
+        
+        circle(rgb, Point(cx, cy)*dsm, 5, Scalar(0, 255, 255), 2, CV_AA);
         circle(carMask, Point(cx, cy), 5, Scalar(127), 2, CV_AA);
 //        float vx = linereg.at<float>(0);
 //        float vy = linereg.at<float>(1);
@@ -138,7 +194,7 @@ int main(int argc, char** argv) {
             modelCropRect = Rect(minx, miny, maxx - minx, maxy - miny);
         }
         Mat modelCrop(rgb(modelCropRect));
-        
+
         static vector<Point2f> carIn;
         static Point2f carF, carB;
         static int uid = 0;
@@ -161,8 +217,25 @@ int main(int argc, char** argv) {
             circle(modelCrop, carIn[0], 5, Scalar(0, 0, 255), 2, CV_AA);
             circle(modelCrop, carIn[1], 5, Scalar(0, 0, 255), 2, CV_AA);
             line(modelCrop, carIn[0], carIn[1], Scalar(0, 0, 255), 2, CV_AA);
+
+            calib.calib(rgb, Size(rgb.size()), 0.04f);
+            cout<<calib.homoshow<<endl;
         }
         imshow("mc", modelCrop);
+        
+        
+        vector<Point2f> ntv;
+        ntv.push_back(Point2f(cx, cy)*dsm);
+        cv::perspectiveTransform(ntv, ntv, calib.homoshow);
+        tracked.push_back(ntv.front());
+        
+        {
+            Mat uni;
+            warpPerspective(rgb, uni, calib.homoshow, rgb.size());
+            for(auto& v : tracked)
+                circle(uni, v, 5, Scalar(0, 0, 255));
+            imshow("uni", uni);
+        }
         
         ffCurrent.detect(modelCrop);
         
@@ -170,11 +243,18 @@ int main(int argc, char** argv) {
         Mat draw = rgb(modelCropRect);
 //        ffCurrent.showMatches(draw);
         
+        if(ffModel.matched.size() < 10)
+            continue;
+        
+        Mat mod2 = mod.clone();
+        ffModel.showMatches(mod2);
+        imshow("mod2", mod2);
+        
         Mat H = findHomography(ffModel.matched, ffCurrent.matched, CV_RANSAC);
         // Mat F = findFundamentalMat(ffModel.matched, ffCurrent.matched, CV_RANSAC);
         vector<Point2f> carOut;
         
-        if(!H.empty())
+        if(0 && !H.empty())
         {
             perspectiveTransform(carIn, carOut, H);
             circle(draw, carOut[0], 5, Scalar(0, 0, 255), 2, CV_AA);
@@ -186,7 +266,7 @@ int main(int argc, char** argv) {
         imshow("mask", carMask);
         imshow("rgb", rgb);
         imshow("rgbSm", rgbSm);
-        char c = waitKey(0);
+        char c = waitKey(10);
         if(c == 27) break;
     }
 
