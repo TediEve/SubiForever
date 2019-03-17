@@ -127,6 +127,7 @@ public:
     
     void detect(const Mat& img)
     {
+        orb->setEdgeThreshold(10);
         orb->setMaxFeatures(1000);
         orb->detectAndCompute(img, Mat(), keypoints, descriptors);
     }
