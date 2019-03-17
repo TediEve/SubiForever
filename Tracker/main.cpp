@@ -8,17 +8,17 @@
 #include <cstdlib>
 #include <opencv2/opencv.hpp>
 
-#include <ChartCalib.h>
-#include <ColorTracker.h>
+#include "ChartCalib.h"
+#include "ColorTracker.h"
 
 using namespace std;
 using namespace cv;
 
 // dreamteamhack:dreamTeam15
 int main(int argc, char** argv) {
-    cv::VideoCapture cap;
+    cv::VideoCapture cap(0);
     
-    cap.open("./b4.h264");
+//    cap.open("./b4.h264");
 //    cap.open("./vid1.h264");
      
     ChartCalib calib;

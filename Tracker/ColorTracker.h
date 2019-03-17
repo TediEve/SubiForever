@@ -60,7 +60,7 @@ public:
         
         if(carMask.empty())
             carMask = Mat(rgbSm.size(), CV_8UC1, Scalar(0));
-        carMask = 0;
+        carMask.setTo(0);
         
 #ifdef USE_SPARSE_PTS
         vector<Point> pts;
