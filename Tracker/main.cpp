@@ -8,13 +8,13 @@
 #include <cstdlib>
 #include <opencv2/opencv.hpp>
 
-#include <FeatureFinder.h>
 #include <ChartCalib.h>
 #include <ColorTracker.h>
 
 using namespace std;
 using namespace cv;
 
+// dreamteamhack:dreamTeam15
 int main(int argc, char** argv) {
     cv::VideoCapture cap;
     
@@ -31,6 +31,8 @@ int main(int argc, char** argv) {
 //    int uiChessboard = 0;
 //    createTrackbar("Find Ground", "ctrl", &uiChessboard, 1);
     
+    ColorTracker::State carState;
+    
     Mat rgb;
     constexpr int ds = 1;
     while(true)
@@ -39,7 +41,6 @@ int main(int argc, char** argv) {
         if(rgb.empty()) break;
         else for(int i = 0; i < ds; ++i) pyrDown(rgb, rgb);
         
-        ColorTracker::State carState;
         bool isTracked = ctrack.process(rgb, carState);
         
         if(isTracked)
@@ -78,6 +79,10 @@ int main(int argc, char** argv) {
         if(c == 'c') {
             tracked.clear();
             calib.calib(rgb, Size(rgb.size()), 0.04f);
+        }
+        if(c == 'd') {
+            carState.angle += M_PI;
+            carState.angle =  ColorTracker::modAngle(carState.angle);
         }
     }
 

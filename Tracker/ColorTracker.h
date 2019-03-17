@@ -13,28 +13,6 @@
 #include <opencv2/opencv.hpp>
 using namespace std;
 
-float modAngle(float angle, float minAngle = 0.0f, float maxAngle = M_PI*2.0f)
-{
-    while(angle > maxAngle) angle -= M_PI*2.0f;
-    while(angle < minAngle) angle += M_PI*2.0f;
-    return angle;
-}
-
-float closestAngle(float a1, float a2)
-{
-    //return modAngle(a1 - a2, );
-    
-//    float under = modAngle(a2 - M_PI);
-//    float over  = modAngle(a2 + M_PI);
-//
-//    float smallestAngle = M_PI*2.0f;
-//    smallestAngle = min(smallestAngle, abs(a1 - a2));
-//    smallestAngle = min(smallestAngle, abs(a1 - under));
-//    smallestAngle = min(smallestAngle, abs(a1 - over));
-//    
-//    return smallestAngle;
-}
-
 class ColorTracker
 {
 public:
@@ -54,12 +32,26 @@ public:
         float angle;
     };
     
-    ColorTracker() { lastState.angle = 0.0f; }
+    ColorTracker() { }
     
-    State lastState;
+    // State lastState;
     
+    static float modAngle(float angle, float minAngle = 0.0f, float maxAngle = M_PI*2.0f)
+    {
+        while(angle > maxAngle) angle -= M_PI*2.0f;
+        while(angle < minAngle) angle += M_PI*2.0f;
+        return angle;
+    }
+
+    static float closestAngle(float a1, float a2)
+    {
+        return modAngle(a1 - a2, -M_PI, M_PI);
+    }
+
     bool process(const Mat& mat, State& returnState)
     {
+        State lastState = returnState;
+        
         rgbSm = mat;
         for(int i = 0; i < ds; ++i)
             pyrDown(rgbSm, rgbSm);
@@ -105,10 +97,10 @@ public:
 
 //        returnState.angle = rrect.angle;
         returnState.angle = modAngle(rrect.angle);
-        cout<<"CUR: "<<returnState.angle<<" LAST: "<<lastState.angle<<" DIFF: "<<closestAngle(lastState.angle, returnState.angle)<<endl;
+        // cout<<"CUR: "<<returnState.angle<<" LAST: "<<lastState.angle<<" DIFF: "<<closestAngle(lastState.angle, returnState.angle)<<endl;
         if(abs(closestAngle(lastState.angle, returnState.angle)) > M_PI_2)
         {
-            cout<<"flip angle"<<endl;
+            // cout<<"flip angle"<<endl;
             returnState.angle += M_PI;
             returnState.angle = modAngle(returnState.angle);
         }
