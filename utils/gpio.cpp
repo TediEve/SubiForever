@@ -245,4 +245,3 @@ GPIO::GPIO(unsigned int const _gpio, Direction const _direction)
 
 
 
-
