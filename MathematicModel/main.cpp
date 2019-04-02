@@ -104,40 +104,6 @@ void drawPath(Car& car)
             //std::cout<<car.posx<<" "<<car.posy << " ";
             circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
        
-
-        
-
-        // if( < minDist) {
-        //     minDist = 
-        //     currInput.steerAngle += 2;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"left"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-        // }
-        // if(c == 's') {
-        //     currInput.velocity = -10;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"down"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-
-        // }
-
-        // if(c == 'd') {
-        //     currInput.steerAngle -= 2;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"right"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-
-        // }
-        // if(c == 'w') {
-        //     currInput.velocity = 10;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"up"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-
-        // }
-        // if(distanceCalculate()){
-        //     currInput.velocity = 0;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"stop"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-        // }
-        
         if(c == 27)
         {
             break;
@@ -165,56 +131,52 @@ int main(int argc, char** argv)
     drawPath(car);
 
     int control = 0;
-    while(true)
-    {
-//        circle(m, Point(mx, my), 20, Scalar(0, 0, 255), 2);
-//        line(m, Point(50, 50), Point(mx, my), Scalar(0, 255, 0), 2);
+//     while(true)
+//     {
+// //        circle(m, Point(mx, my), 20, Scalar(0, 0, 255), 2);
+// //        line(m, Point(50, 50), Point(mx, my), Scalar(0, 255, 0), 2);
         
         
-        circle(m, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
-       
-        imwrite("save.jpg", m);
-        
-        // car.step(0.01f, control);
-        
-        m *= 0.95f;
-        imshow("cntr", m);
-        char c = waitKey(10);
-        if(c == 27) break;
-        
-        // if(c == 'a') {
-        //     currInput.steerAngle += 2;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"left"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-        // }
-        // if(c == 's') {
-        //     currInput.velocity = -10;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"down"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
+//         circle(m, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
 
-        // }
-
-        // if(c == 'd') {
-        //     currInput.steerAngle -= 2;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"right"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-
-        // }
-        // if(c == 'w') {
-        //     currInput.velocity = 10;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"up"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-
-        // }
-        // if(c== 'x'){
-        //     currInput.velocity = 0;
-        //     useAckerman.ackSteering(car, currInput);
-        //     std::cout<<"stop"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
-        // }
+//         m *= 0.95f;
+//         imshow("cntr", m);
+//         char c = waitKey(10);
+//         if(c == 27) break;
         
-    }
-    //  for(int i = 0; i< pathPoints.size();i++ ){
-    //     std::cout<<pathPoints[i].x<<" "<<pathPoints[i].y<<" ";
-    // }
+//         // if(c == 'a') {
+//         //     currInput.steerAngle += 2;
+//         //     useAckerman.ackSteering(car, currInput);
+//         //     std::cout<<"left"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
+//         // }
+//         // if(c == 's') {
+//         //     currInput.velocity = -10;
+//         //     useAckerman.ackSteering(car, currInput);
+//         //     std::cout<<"down"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
+
+//         // }
+
+//         // if(c == 'd') {
+//         //     currInput.steerAngle -= 2;
+//         //     useAckerman.ackSteering(car, currInput);
+//         //     std::cout<<"right"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
+
+//         // }
+//         // if(c == 'w') {
+//         //     currInput.velocity = 10;
+//         //     useAckerman.ackSteering(car, currInput);
+//         //     std::cout<<"up"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
+
+//         // }
+//         // if(c== 'x'){
+//         //     currInput.velocity = 0;
+//         //     useAckerman.ackSteering(car, currInput);
+//         //     std::cout<<"stop"<<car.posx<<" "<<car.posy<<" "<<car.angle<<std::endl;
+//         // }
+        
+//     }
+//     //  for(int i = 0; i< pathPoints.size();i++ ){
+//     //     std::cout<<pathPoints[i].x<<" "<<pathPoints[i].y<<" ";
+//     // }
     std::cout<<"ENDDDDDDDDDDDDDDDDDDDDD";
 }
