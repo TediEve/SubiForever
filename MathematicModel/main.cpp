@@ -133,7 +133,7 @@ void drawPath(Car& car)
             currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
             currInput.velocity = 5;
             std::cout<<currInput.steerAngle<< " " << car.angle<<endl;
-            useAckerman.ackSteering(car, currInput);
+            useAckerman.ackSteeringMonocycle(car, currInput);
             if(distCarGoal < 10 && pathPoints.size() > pointGoal){
                 pointGoal++;
                 currInput.velocity = 0;

@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "Car.hpp"
+#include "KinematicCar.hpp"
 
 struct DynamicInput
 {
@@ -20,6 +21,7 @@ struct AckermanModel
 {
 	double const pi = 3.14159265359;
 	double dt = 0.1;
-	void ackSteering(Car& car, const DynamicInput& kinem);
+	void ackSteeringMonocycle(Car& car, const DynamicInput& kinem);
+	void ackSteeringBicycle(KinematicCar& car, const DynamicInput& kinem);
 }; 
 #endif
