@@ -1,33 +1,26 @@
 #ifndef CAR_HPP
 #define CAR_HPP 
+/**
+  * class Car 
+  * represents basic kinematic model of a monocycle car
+  */
+
 class Car
 {
 public:
     float posx;
     float posy;
     float angle;
-    
-    float speedx = 0;
-    float speedy = 0;
 
-    
     const float width  = 32;
     const float height = 40;
     const float mass   = 500;
     const float length = 40;
-    
-    const float acceleration = 2.2;
-    const float damping = 1;
-    
-    const float maxTurningRadius = 40;
-    
-    static const int controlForward = 1;
-    static const int controlBackward = 2;
-    static const int controlLeft = 4;
-    static const int controlRight = 8;
-    
-    void step(float delta, int control);
+    const float vel    = 5;
+
+    Car();
     Car(float posx, float posy, float angle);
+    ~Car();
 };
 
 #endif
