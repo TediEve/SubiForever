@@ -15,6 +15,9 @@ KinematicCar::KinematicCar(float posx, float posy, float angle, float inertialHe
   this->acceleration    = acceleration;
   this->steerAngle      = steerAngle;
 }
+KinematicCar::KinematicCar(const KinematicCar& car){
+    
+}
 
 KinematicCar::~KinematicCar(){
 

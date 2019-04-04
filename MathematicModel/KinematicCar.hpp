@@ -1,6 +1,7 @@
 #ifndef KINEMATICCAR_HPP
 #define KINEMATICCAR_HPP 
-class KinematicCar:public Car
+#include "Car.hpp"
+class KinematicCar: public Car
 {
 public:
     //the angle of theviation according to the horizontal axis
@@ -15,7 +16,8 @@ public:
     // the steer angle of the front tires
     float steerAngle      = 0.0;
     KinematicCar();
-    KinematicCar(float posx, float posy, float angle);
+    KinematicCar(float posx, float posy, float angle, float inertialHeading,
+                 float angleVel, float acceleration, float steerAngle);
     KinematicCar(const KinematicCar& car);
     ~KinematicCar();
 };

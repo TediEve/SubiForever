@@ -167,8 +167,6 @@ int main(int argc, char** argv)
     // cv::setMouseCallback("cntr", mcb);
     
     Car car(50,50,0.0f);
-    car.speedx = 0;
-    car.speedy = 0;
     drawPath(car);
 
     int control = 0;

@@ -1,4 +1,4 @@
-Sources=MathematicModel/AckermanModel.cpp  MathematicModel/Car.cpp MathematicModel/main.cpp
+Sources=MathematicModel/AckermanModel.cpp  MathematicModel/Car.cpp MathematicModel/KinematicCar.cpp MathematicModel/main.cpp
 Target = ack
 
 # general compiler settings
