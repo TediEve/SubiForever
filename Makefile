@@ -1,4 +1,4 @@
-Sources=MathematicModel/AckermanModel.cpp  MathematicModel/Car.cpp HybridAstar/src/State.cpp HybridAstar/src/Compare.cpp HybridAstar/src/Map.cpp HybridAstar/src/Gui.cpp HybridAstar/src/Planner.cpp MathematicModel/main.cpp
+Sources=MathematicModel/AckermanModel.cpp  MathematicModel/Car.cpp MathematicModel/main.cpp
 Target = ack
 
 # general compiler settings

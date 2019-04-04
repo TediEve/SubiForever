@@ -38,7 +38,37 @@ int mx, my;
 int mc[2] = {0};
 int pointsCount = 1;
 vector<Point> pathPoints;
-Mat pathMatrix(512, 512, CV_8UC3);
+Mat pathMatrix(1024, 1024, CV_8UC3, cv::Scalar(122,122,122));
+
+void drawTire(cv::Mat image, cv::Point2f center, cv::Size2f scale, float angle){
+  cv::ellipse(image, cv::RotatedRect(center, scale, angle), cv::Scalar(0,0,0), -1, 4);
+}
+
+void drawCar(cv::Mat image, float centerCarX, float centerCarY, float widthC, float heightC, float angle, float steerAngle, bool del){
+  float widthT  = widthC/3;
+  float heightT = heightC/6;
+  cv::Scalar carColor[2] = {cv::Scalar(255, 0, 0), cv::Scalar(255, 255, 255)};
+  if(del)
+  { 
+    carColor[0] = cv::Scalar(122, 122, 122);
+    carColor[1] = cv::Scalar(122, 122, 122);
+  }
+
+  cv::Point2f vertices2f[4];
+  cv::Point vertices[4];
+
+  cv::RotatedRect(cv::Point2f(centerCarX, centerCarY), cv::Size2f(widthC + 10, heightC),angle).points(vertices2f);
+
+  for(int i = 0; i < 4; ++i)
+  {
+    vertices[i] = vertices2f[i];
+  }
+  cv::fillConvexPoly(image, vertices, 4, carColor[0]);
+  cv::putText(image, "SUBI", cv::Point2f(centerCarX - widthC/2 + widthC/10, centerCarY - heightC/2 + 0.8 * heightC), 1, 1, carColor[1],3);
+  drawTire(image, cv::Point2f(centerCarX - widthC * 0.5 + widthT * 0.5, centerCarY - 0.5 * heightC), cv::Size2f(widthT, heightT), 0);
+  drawTire(image, cv::Point2f(centerCarX - widthC * 0.5 + widthT * 0.5, centerCarY + 0.5 * heightC), cv::Size2f(widthT, heightT), 0);
+  drawTire(image, cv::Point2f(centerCarX + 0.5 * widthC - widthT * 0.5, centerCarY + 0.5 * heightC), cv::Size2f(widthT, heightT), steerAngle);  drawTire(image, cv::Point2f(centerCarX + 0.5 * widthC - widthT * 0.5, centerCarY - 0.5 * heightC), cv::Size2f(widthT, heightT), steerAngle);
+}
 
 void mcb(int event, int x, int y, int flags, void* userdata)
 {
@@ -83,28 +113,38 @@ void drawPath(Car& car)
    
     DynamicInput currInput = {0};
     AckermanModel useAckerman;
-    
+    bool del = 0 ;
     int pointGoal = 1;
 
     while(true)
     {    
             imshow("pathDrawer", pathMatrix);
             char c = waitKey(10);
-
+            if(del)
+            {
+            drawCar(pathMatrix, car.posx, car.posy, car.length, car.width, car.angle, currInput.steerAngle, del);
+            del = 0;
+            }
             double angleToGoal = atan2((car.posy - pathPoints[pointGoal].y), (car.posx - pathPoints[pointGoal].x))*(180/M_PI);
             double distCarGoal = distanceCalculate(Point(car.posx, car.posy), pathPoints[pointGoal]);
             //std::cout<<distCarGoal<< " ";
-            if(distCarGoal < 10 && pathPoints.size() > pointGoal){
-                pointGoal++;
-            } 
+             
             currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
             currInput.velocity = 5;
             std::cout<<currInput.steerAngle<< " " << car.angle<<endl;
             useAckerman.ackSteering(car, currInput);
+            if(distCarGoal < 10 && pathPoints.size() > pointGoal){
+                pointGoal++;
+                currInput.velocity = 0;
+            }
             //std::cout<<car.posx<<" "<<car.posy << " ";
-            circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
+            // circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
+
+            drawCar(pathMatrix, car.posx, car.posy, car.length, car.width, car.angle, currInput.steerAngle, del);
+            del = true;
+            //wind.drawCar(State(car.posx, car.posy, car.angle));
        
-        if(c == 27)
+        if(c == 27 )
         {
             break;
         }

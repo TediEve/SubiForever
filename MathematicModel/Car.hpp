@@ -3,17 +3,18 @@
 class Car
 {
 public:
-    float posx, posy;
+    float posx;
+    float posy;
     float angle;
     
     float speedx = 0;
     float speedy = 0;
 
     
-    const float width  = 16;
-    const float height = 20;
+    const float width  = 32;
+    const float height = 40;
     const float mass   = 500;
-    const float length = 20;
+    const float length = 40;
     
     const float acceleration = 2.2;
     const float damping = 1;

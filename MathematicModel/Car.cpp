@@ -13,3 +13,4 @@ Car::Car(float posx, float posy, float angle){
 	this->posy = posy;
 	this->angle = angle;
 }
+
