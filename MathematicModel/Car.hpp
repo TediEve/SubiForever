@@ -4,6 +4,7 @@
   * class Car 
   * represents basic kinematic model of a monocycle car
   */
+#include <opencv2/opencv.hpp>
 
 class Car
 {
@@ -20,6 +21,7 @@ public:
 
     Car();
     Car(float posx, float posy, float angle);
+    void drawCar(cv::Mat image, float steerAngle, bool del);
     ~Car();
 };
 

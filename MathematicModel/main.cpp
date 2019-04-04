@@ -12,8 +12,8 @@
  */
 
 #include <cstdlib>
-#include <opencv2/opencv.hpp>
-#include<vector>
+// #include <opencv2/opencv.hpp>
+#include <vector>
 #include <cmath>
 
 #include "Car.hpp"
@@ -40,36 +40,8 @@ int pointsCount = 1;
 vector<Point> pathPoints;
 Mat pathMatrix(1024, 1024, CV_8UC3, cv::Scalar(122,122,122));
 
-void drawTire(cv::Mat image, cv::Point2f center, cv::Size2f scale, float angle){
-  cv::ellipse(image, cv::RotatedRect(center, scale, angle), cv::Scalar(0,0,0), -1, 4);
-}
 
-void drawCar(cv::Mat image, Car car, float steerAngle, bool del){
-  float widthT  = car.width/3;
-  float heightT = car.height/6;
-  cv::Scalar carColor[2] = {cv::Scalar(255, 0, 0), cv::Scalar(255, 255, 255)};
-  if(del)
-  { 
-    carColor[0] = cv::Scalar(122, 122, 122);
-    carColor[1] = cv::Scalar(122, 122, 122);
-  }
 
-  cv::Point2f vertices2f[4];
-  cv::Point vertices[4];
-
-  cv::RotatedRect(cv::Point2f(car.posx, car.posy), cv::Size2f(car.width + 10, car.height), car.angle).points(vertices2f);
-
-  for(int i = 0; i < 4; ++i)
-  {
-    vertices[i] = vertices2f[i];
-  }
-  cv::fillConvexPoly(image, vertices, 4, carColor[0]);
-  cv::putText(image, "SUBI", cv::Point2f(car.posx - 0.4 * car.width, car.posy + 0.3 * car.height), 1, 1, carColor[1],3);
-  drawTire(image, cv::Point2f(car.posx -       car.width * 0.5 + widthT * 0.5, car.posy - 0.5 * car.height), cv::Size2f(widthT, heightT), 0);
-  drawTire(image, cv::Point2f(car.posx -       car.width * 0.5 + widthT * 0.5, car.posy + 0.5 * car.height), cv::Size2f(widthT, heightT), 0);
-  drawTire(image, cv::Point2f(car.posx + 0.5 * car.width -       widthT * 0.5, car.posy + 0.5 * car.height), cv::Size2f(widthT, heightT), steerAngle); 
-  drawTire(image, cv::Point2f(car.posx + 0.5 * car.width -       widthT * 0.5, car.posy - 0.5 * car.height), cv::Size2f(widthT, heightT), steerAngle);
-}
 
 void mcb(int event, int x, int y, int flags, void* userdata)
 {
@@ -101,7 +73,57 @@ void onPathDrawing(int event, int x, int y, int flags, void* userdata)
 
     }
 }
+//ugly prototype
 
+
+void drawPathKin(KinematicCar& car)
+{
+    double minDist = 10000;
+    pathPoints.push_back(Point(car.posx, car.posy));
+
+    namedWindow("pathDrawer");
+    // circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
+    cv::setMouseCallback("pathDrawer", onPathDrawing);
+   
+    DynamicInput currInput = {0};
+    AckermanModel useAckerman;
+    bool del = 0 ;
+    int pointGoal = 1;
+
+    while(true)
+    {    
+            imshow("pathDrawer", pathMatrix);
+            char c = waitKey(10);
+            if(del)
+            {
+            car.drawCar(pathMatrix, currInput.steerAngle, del);
+            del = 0;
+            }
+            double angleToGoal = atan2((car.posy - pathPoints[pointGoal].y), (car.posx - pathPoints[pointGoal].x))*(180/M_PI);
+            double distCarGoal = distanceCalculate(Point(car.posx, car.posy), pathPoints[pointGoal]);
+            //std::cout<<distCarGoal<< " ";
+             
+            currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
+            currInput.velocity = 5;
+            std::cout<<currInput.steerAngle<< " " << car.angle<<endl;
+            useAckerman.ackSteeringBicycle(car, currInput);
+            if(distCarGoal < 10 && pathPoints.size() > pointGoal){
+                pointGoal++;
+                currInput.velocity = 0;
+            }
+            //std::cout<<car.posx<<" "<<car.posy << " ";
+            // circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
+
+            car.drawCar(pathMatrix, currInput.steerAngle, del);
+            del = true;
+            //wind.drawCar(State(car.posx, car.posy, car.angle));
+       
+        if(c == 27 )
+        {
+            break;
+        }
+    }
+}
 
 void drawPath(Car& car)
 {
@@ -123,7 +145,7 @@ void drawPath(Car& car)
             char c = waitKey(10);
             if(del)
             {
-            drawCar(pathMatrix, car, currInput.steerAngle, del);
+            car.drawCar(pathMatrix, currInput.steerAngle, del);
             del = 0;
             }
             double angleToGoal = atan2((car.posy - pathPoints[pointGoal].y), (car.posx - pathPoints[pointGoal].x))*(180/M_PI);
@@ -141,7 +163,7 @@ void drawPath(Car& car)
             //std::cout<<car.posx<<" "<<car.posy << " ";
             // circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
 
-            drawCar(pathMatrix, car, currInput.steerAngle, del);
+            car.drawCar(pathMatrix, currInput.steerAngle, del);
             del = true;
             //wind.drawCar(State(car.posx, car.posy, car.angle));
        
@@ -168,6 +190,8 @@ int main(int argc, char** argv)
     
     Car car(50,50,0.0f);
     drawPath(car);
+    // KinematicCar car(50,50,0.0f,0.5f);
+    // drawPathKin(car);
 
     int control = 0;
 //     while(true)
