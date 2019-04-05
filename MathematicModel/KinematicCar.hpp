@@ -1,6 +1,8 @@
 #ifndef KINEMATICCAR_HPP
-#define KINEMATICCAR_HPP 
+#define KINEMATICCAR_HPP
+
 #include "Car.hpp"
+
 class KinematicCar: public Car
 {
 public:
@@ -20,7 +22,7 @@ public:
     KinematicCar(float posx, float posy, float angle, float inertialHeading,
                  float angleVel, float acceleration, float steerAngle);
     KinematicCar(const KinematicCar& car);
-    void drawCar(cv::Mat image, float steerAngle, bool del);
+    void drawCar(Display image, float steerAngle);
     ~KinematicCar();
 };
 

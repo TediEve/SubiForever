@@ -6,6 +6,9 @@
   */
 #include <opencv2/opencv.hpp>
 
+
+#include "DrawUtils.hpp"
+
 class Car
 {
 public:
@@ -13,15 +16,15 @@ public:
     float posy;
     float angle;
 
-    const float width  = 32;
-    const float height = 40;
+    const float width  = 40;
+    const float height = 20;
     const float mass   = 500;
-    const float length = 40;
+    const float length = 20;
     const float vel    = 5;
 
     Car();
     Car(float posx, float posy, float angle);
-    void drawCar(cv::Mat image, float steerAngle, bool del);
+    void drawCar(Display image, float steerAngle);
     ~Car();
 };
 

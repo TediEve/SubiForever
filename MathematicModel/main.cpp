@@ -11,13 +11,17 @@
  * Created on 16 March 2019, 13:55
  */
 
+
+//fix the global mouse points vector
+//see how to read from the mouse
+
 #include <cstdlib>
-// #include <opencv2/opencv.hpp>
 #include <vector>
 #include <cmath>
 
 #include "Car.hpp"
 #include "AckermanModel.hpp"
+#include "DrawUtils.hpp"
 
 using namespace std;
 using namespace cv;
@@ -38,8 +42,8 @@ int mx, my;
 int mc[2] = {0};
 int pointsCount = 1;
 vector<Point> pathPoints;
-Mat pathMatrix(1024, 1024, CV_8UC3, cv::Scalar(122,122,122));
-
+// Mat display.display(1024, 1024, CV_8UC3, cv::Scalar(122,122,122));
+Display display;
 
 
 
@@ -63,41 +67,40 @@ void onPathDrawing(int event, int x, int y, int flags, void* userdata)
         pathPoints.push_back(p);
       //  pathPoints.size();
         
-        circle(pathMatrix, Point(x,y), 0,  Scalar(0, 0, 255), 15);
+        circle(display.display, Point(x,y), 0,  Scalar(0, 0, 255), 15);
 
         if(pointsCount == 1) return;
         
         Point prevPoint = pathPoints[pointsCount - 2];
         
-        line(pathMatrix, p, prevPoint , Scalar(0,0,255), 10);
+        line(display.display, p, prevPoint , Scalar(0,0,255), 10);
 
     }
 }
-//ugly prototype
 
-
-void drawPathKin(KinematicCar& car)
+template<typename T>
+void drawPath(T& car, std::string displayName)
 {
+    display.displayName = displayName;
     double minDist = 10000;
     pathPoints.push_back(Point(car.posx, car.posy));
 
-    namedWindow("pathDrawer");
-    // circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
-    cv::setMouseCallback("pathDrawer", onPathDrawing);
+    namedWindow(displayName);
+    // circle(display.display, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
+    cv::setMouseCallback(displayName, onPathDrawing);
    
     DynamicInput currInput = {0};
     AckermanModel useAckerman;
-    bool del = 0 ;
+    // bool del = 0 ;
     int pointGoal = 1;
 
     while(true)
     {    
-            imshow("pathDrawer", pathMatrix);
-            char c = waitKey(10);
-            if(del)
+            display.show(10);
+            if(display.del)
             {
-            car.drawCar(pathMatrix, currInput.steerAngle, del);
-            del = 0;
+            car.drawCar(display, currInput.steerAngle);
+            display.del = false;
             }
             double angleToGoal = atan2((car.posy - pathPoints[pointGoal].y), (car.posx - pathPoints[pointGoal].x))*(180/M_PI);
             double distCarGoal = distanceCalculate(Point(car.posx, car.posy), pathPoints[pointGoal]);
@@ -106,68 +109,19 @@ void drawPathKin(KinematicCar& car)
             currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
             currInput.velocity = 5;
             std::cout<<currInput.steerAngle<< " " << car.angle<<endl;
-            useAckerman.ackSteeringBicycle(car, currInput);
+            useAckerman.ackermanSteering(car, currInput);
             if(distCarGoal < 10 && pathPoints.size() > pointGoal){
                 pointGoal++;
                 currInput.velocity = 0;
             }
             //std::cout<<car.posx<<" "<<car.posy << " ";
-            // circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
+            // circle(display.display, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
 
-            car.drawCar(pathMatrix, currInput.steerAngle, del);
-            del = true;
+            car.drawCar(display, currInput.steerAngle);
+            display.del = true;
             //wind.drawCar(State(car.posx, car.posy, car.angle));
        
-        if(c == 27 )
-        {
-            break;
-        }
-    }
-}
-
-void drawPath(Car& car)
-{
-    double minDist = 10000;
-    pathPoints.push_back(Point(car.posx, car.posy));
-
-    namedWindow("pathDrawer");
-    circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
-    cv::setMouseCallback("pathDrawer", onPathDrawing);
-   
-    DynamicInput currInput = {0};
-    AckermanModel useAckerman;
-    bool del = 0 ;
-    int pointGoal = 1;
-
-    while(true)
-    {    
-            imshow("pathDrawer", pathMatrix);
-            char c = waitKey(10);
-            if(del)
-            {
-            car.drawCar(pathMatrix, currInput.steerAngle, del);
-            del = 0;
-            }
-            double angleToGoal = atan2((car.posy - pathPoints[pointGoal].y), (car.posx - pathPoints[pointGoal].x))*(180/M_PI);
-            double distCarGoal = distanceCalculate(Point(car.posx, car.posy), pathPoints[pointGoal]);
-            //std::cout<<distCarGoal<< " ";
-             
-            currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
-            currInput.velocity = 5;
-            std::cout<<currInput.steerAngle<< " " << car.angle<<endl;
-            useAckerman.ackSteeringMonocycle(car, currInput);
-            if(distCarGoal < 10 && pathPoints.size() > pointGoal){
-                pointGoal++;
-                currInput.velocity = 0;
-            }
-            //std::cout<<car.posx<<" "<<car.posy << " ";
-            // circle(pathMatrix, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
-
-            car.drawCar(pathMatrix, currInput.steerAngle, del);
-            del = true;
-            //wind.drawCar(State(car.posx, car.posy, car.angle));
-       
-        if(c == 27 )
+        if(display.currChar == 27 )
         {
             break;
         }
@@ -179,21 +133,17 @@ void drawPath(Car& car)
 
 int main(int argc, char** argv)
 {
-    Mat m(512, 512, CV_8UC3);
-//    m = imread("index.jpeg");
-    
+
     DynamicInput currInput = {0};
-    AckermanModel useAckerman;
+    // AckermanModel useAckerman;
 
-    // namedWindow("cntr");
-    // cv::setMouseCallback("cntr", mcb);
-    
     Car car(50,50,0.0f);
-    drawPath(car);
-    // KinematicCar car(50,50,0.0f,0.5f);
-    // drawPathKin(car);
+    // drawPath(car, "Kinematic Monocycle Model");
+    KinematicCar kincar(50,50,0.0f,0.5f);
 
-    int control = 0;
+    drawPath(kincar, "Kinematic Bicycle Model");
+
+    // int control = 0;
 //     while(true)
 //     {
 // //        circle(m, Point(mx, my), 20, Scalar(0, 0, 255), 2);
