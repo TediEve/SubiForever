@@ -2,7 +2,7 @@ Sources=MathematicModel/DrawUtils.cpp MathematicModel/Map.cpp MathematicModel/Ac
 Target = ack
 
 # general compiler settings
-CXXFLAGS = -ggdb -O3 -ffast-math -w
+CXXFLAGS = -ggdb -Wall -O3 -ffast-math -w
 LIBS = `pkg-config --libs opencv`
 
 all:

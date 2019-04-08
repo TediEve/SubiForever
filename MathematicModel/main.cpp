@@ -24,8 +24,20 @@
 #include "DrawUtils.hpp"
 #include "Map.hpp"
 
-using namespace std;
+// using namespace std;
 using namespace cv;
+
+void printMatrInd(std::vector<bool> v, int width){
+    for (int i = 0; i < v.size(); ++i)
+    {
+        /* code */
+        if(i % width == 0){
+            std::cout<<std::endl;
+        }
+        std::cout<<i<<" ";
+
+    }
+}
 
 double distanceCalculate(Point p1, Point p2)
 {
@@ -42,7 +54,7 @@ double distanceCalculate(Point p1, Point p2)
 int mx, my;
 int mc[2] = {0};
 int pointsCount = 1;
-vector<Point> pathPoints;
+std::vector<Point> pathPoints;
 // Mat display.display(1024, 1024, CV_8UC3, cv::Scalar(122,122,122));
 Display display;
 
@@ -109,7 +121,7 @@ void drawPath(T& car, std::string displayName)
              
             currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
             currInput.velocity = 5;
-            std::cout<<currInput.steerAngle<< " " << car.angle<<endl;
+            std::cout<<currInput.steerAngle<< " " << car.angle<<std::endl;
             useAckerman.ackermanSteering(car, currInput);
             if(distCarGoal < 10 && pathPoints.size() > pointGoal){
                 pointGoal++;
@@ -143,18 +155,18 @@ int main(int argc, char** argv)
     // KinematicCar kincar(50,50,0.0f,0.5f);
 
     // drawPath(kincar, "Kinematic Bicycle Model");
-    std::vector<bool> v(display.displaySize.width * display.displaySize.height);
+    std::vector<bool> v(display.display.rows * display.display.cols);
 
-    for (int i = 0; i < v.size(); ++i)
-    {
-        if (i > 100 && i < 200)
-        {
-            v[i] = 1;
-        }
-        else{
-            v[i] = 0;
-        }
-    }
+    // for (int i = 0; i < v.size(); ++i)
+    // {
+    //     if (i > 100 && i < 200)
+    //     {
+    //         v[i] = 1;
+    //     }
+    //     else{
+    //         v[i] = 0;
+    //     }
+    // }
     display.displayName = "test";
     
     Map map(display, v);

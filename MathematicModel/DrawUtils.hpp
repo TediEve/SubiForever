@@ -8,11 +8,11 @@
 struct Display
 {
     std::string displayName = "Display";
-    cv::Size    displaySize = cv::Size(512, 512);
-    cv::Mat     display     = cv::Mat(displaySize, CV_8UC3, cv::Scalar(122, 122, 122));
-    /** var current pushed keyboard key */
+    // cv::Size2f  displaySize = cv::Size2f(13, 12);
+    cv::Mat     display     = cv::Mat(512, 513, CV_8UC3, cv::Scalar(122, 122, 122));
+    /** current pushed keyboard key */
     int         currChar    = 0;
-    /** var a flag to tell us if we are drawing or deleting */
+    /** a flag to tell us if we are drawing or deleting */
     bool        del         = false;
     /** 
       * visualizes the window with the simulation 

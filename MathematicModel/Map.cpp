@@ -20,15 +20,10 @@ void Map::drawObstacle(Display image){
 }
 
 void Map::makeBorder(Display image){
-  for(int i = 0; i < image.display.rows ; ++i){
-    for(int j = 0; j < image.display.cols; ++j){
-      if((i == image.display.rows - 1) ||
-         (j == image.display.cols - 1) ||
-         (i == 0) || (j == 0)){
-        obstacles[i*image.display.rows + j] = 1;
-      }
-    }
-  }
+  fillLine<true>( true, 0                     , image.display.rows, image.display.cols);
+  fillLine<true>( true, image.display.rows - 1, image.display.rows, image.display.cols);
+  fillLine<false>(true, 0                     , image.display.rows, image.display.cols);
+  fillLine<false>(true, image.display.cols - 1, image.display.rows, image.display.cols);
 }
 
 Map::~Map(){
