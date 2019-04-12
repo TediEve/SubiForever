@@ -10,6 +10,9 @@ Car::Car(float posx, float posy, float angle){
 	this->angle = angle;
 }
 
+Car::Car(Car& car):Car(car.posx, car.posy, car.angle){
+
+}
 
 void Car::drawCar(Display image, float steerAngle){
   float widthT  = width/3;

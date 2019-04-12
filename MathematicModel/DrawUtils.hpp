@@ -4,12 +4,13 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 struct Display
 {
     std::string displayName = "Display";
     // cv::Size2f  displaySize = cv::Size2f(13, 12);
-    cv::Mat     display     = cv::Mat(512, 513, CV_8UC3, cv::Scalar(122, 122, 122));
+    cv::Mat     display     = cv::Mat(512, 512, CV_8UC3, cv::Scalar(122, 122, 122));
     /** current pushed keyboard key */
     int         currChar    = 0;
     /** a flag to tell us if we are drawing or deleting */
