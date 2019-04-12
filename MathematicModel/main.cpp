@@ -17,7 +17,6 @@
 
 #include <cstdlib>
 #include <vector>
-#include <cmath>
 
 #include "Car.hpp"
 #include "AckermanModel.hpp"
@@ -25,7 +24,7 @@
 #include "Map.hpp"
 
 // using namespace std;
-using namespace cv;
+// using namespace cv;
 
 void printMatrInd(std::vector<bool> v, int width){
     for (int i = 0; i < v.size(); ++i)
@@ -39,7 +38,7 @@ void printMatrInd(std::vector<bool> v, int width){
     }
 }
 
-double distanceCalculate(Point p1, Point p2)
+double distanceCalculate(cv::Point p1, cv::Point p2)
 {
     double x = p1.x - p2.x; //calculating number to square in next step
     double y = p1.y - p2.y;
@@ -54,7 +53,7 @@ double distanceCalculate(Point p1, Point p2)
 int mx, my;
 int mc[2] = {0};
 int pointsCount = 1;
-std::vector<Point> pathPoints;
+std::vector<cv::Point> pathPoints;
 // Mat display.display(1024, 1024, CV_8UC3, cv::Scalar(122,122,122));
 Display display;
 
@@ -64,29 +63,29 @@ void mcb(int event, int x, int y, int flags, void* userdata)
 {
     mx = x;
     my = y;
-    if(event == EVENT_LBUTTONDOWN) mc[0] = 1;
-    if(event == EVENT_LBUTTONUP) mc[0] = 0;
-    if(event == EVENT_RBUTTONDOWN) mc[1] = 1;
-    if(event == EVENT_RBUTTONUP) mc[1] = 0;
+    if(event == cv::EVENT_LBUTTONDOWN) mc[0] = 1;
+    if(event == cv::EVENT_LBUTTONUP) mc[0] = 0;
+    if(event == cv::EVENT_RBUTTONDOWN) mc[1] = 1;
+    if(event == cv::EVENT_RBUTTONUP) mc[1] = 0;
 }
 
 void onPathDrawing(int event, int x, int y, int flags, void* userdata)
 {
-    Point p = Point(x,y);
+    cv::Point p = cv::Point(x,y);
     
-    if(MouseEventFlags::EVENT_FLAG_LBUTTON == event)
+    if(cv::MouseEventFlags::EVENT_FLAG_LBUTTON == event)
     {
         pointsCount++;
         pathPoints.push_back(p);
       //  pathPoints.size();
         
-        circle(display.display, Point(x,y), 0,  Scalar(0, 0, 255), 15);
+        cv::circle(display.display, cv::Point(x,y), 0, cv::Scalar(0, 0, 255), 15);
 
         if(pointsCount == 1) return;
         
-        Point prevPoint = pathPoints[pointsCount - 2];
+        cv::Point prevPoint = pathPoints[pointsCount - 2];
         
-        line(display.display, p, prevPoint , Scalar(0,0,255), 10);
+       cv::line(display.display, p, prevPoint , cv::Scalar(0,0,255), 10);
 
     }
 }
@@ -96,9 +95,9 @@ void drawPath(T& car, std::string displayName)
 {
     display.displayName = displayName;
     double minDist = 10000;
-    pathPoints.push_back(Point(car.posx, car.posy));
+    pathPoints.push_back(cv::Point(car.posx, car.posy));
 
-    namedWindow(displayName);
+    cv::namedWindow(displayName);
     // circle(display.display, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
     cv::setMouseCallback(displayName, onPathDrawing);
    
@@ -116,7 +115,7 @@ void drawPath(T& car, std::string displayName)
             display.del = false;
             }
             double angleToGoal = atan2((car.posy - pathPoints[pointGoal].y), (car.posx - pathPoints[pointGoal].x))*(180/M_PI);
-            double distCarGoal = distanceCalculate(Point(car.posx, car.posy), pathPoints[pointGoal]);
+            double distCarGoal = distanceCalculate(cv::Point(car.posx, car.posy), pathPoints[pointGoal]);
             //std::cout<<distCarGoal<< " ";
              
             currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;

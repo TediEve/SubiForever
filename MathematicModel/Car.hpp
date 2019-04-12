@@ -14,6 +14,7 @@ class Car
 public:
     float posx;
     float posy;
+/** orientation of the car */
     float angle;
 
     const float width  = 40;
