@@ -1,8 +1,8 @@
-Sources=MathematicModel/DrawUtils.cpp MathematicModel/Map.cpp MathematicModel/AckermanModel.cpp  MathematicModel/Car.cpp MathematicModel/KinematicCar.cpp MathematicModel/TestImplHybridAstar.cpp MathematicModel/main.cpp
+Sources= MathematicModel/Utils.cpp MathematicModel/DrawUtils.cpp MathematicModel/Map.cpp MathematicModel/AckermanModel.cpp  MathematicModel/Car.cpp MathematicModel/KinematicCar.cpp MathematicModel/TestImplHybridAstar.cpp MathematicModel/main.cpp
 Target = ack
 
 # general compiler settings
-CXXFLAGS = -ggdb -Wall -O3 -ffast-math -w
+CXXFLAGS =  -Wall -O3 -ffast-math -w
 LIBS = `pkg-config --libs opencv`
 
 all:

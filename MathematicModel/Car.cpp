@@ -1,28 +1,25 @@
 #include "Car.hpp"
 Car::Car(){
-    this->posx  = 0;
-    this->posy  = 0;
-    this->angle = 0;
+    this->pos   = {0.0, 0.0};
+    this->angle = Angle(0.0);
 }
-Car::Car(float posx, float posy, float angle){
-	this->posx = posx;
-	this->posy = posy;
-	this->angle = angle;
+Car::Car(cv::Point2f pos, Angle angle){
+	this->pos   = pos;
+	this->angle = Angle(angle);
 }
 
-Car::Car(Car& car):Car(car.posx, car.posy, car.angle){
+Car::Car(const Car& car):Car(car.pos, car.angle){
 
 }
 
-void Car::drawCar(Display image, float steerAngle){
+void Car::drawCar(Display image, Angle steerAngle){
   float widthT  = width/3;
   float heightT = height/6;
-  image.drawCarBody(cv::Point2f(posx,posy), cv::Size2f(width, length), angle, steerAngle);
-  image.drawCarTire(cv::Point2f(posx, posy), cv::Size2f(widthT, heightT), steerAngle);
+
+  image.drawCarBody(pos, cv::Size2f(width, length), Angle(angle));
+  image.drawCarTire(pos, cv::Size2f(widthT, heightT), Angle(steerAngle));
 }
 
 Car::~Car(){
-    this->posx  = 0;
-    this->posy  = 0;
-    this->angle = 0;
+
 }

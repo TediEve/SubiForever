@@ -5,7 +5,7 @@ void Display::show(int t){
     currChar = cv::waitKey(t);
 }
 
-void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, float angle, float steerAngle){
+void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, Angle angle/*, Angle steerAngle*/){
   cv::Scalar carColor[2] = {cv::Scalar(255, 0, 0), cv::Scalar(255, 255, 255)};
   if(del)
   { 
@@ -17,9 +17,9 @@ void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, float angle, f
   cv::Point2f vertices2f[4];
   cv::Point vertices[4];
 
-  cv::RotatedRect(cv::Point2f(posCar.x, posCar.y), 
+  cv::RotatedRect(posCar, 
                   cv::Size2f(sizeCar.width + 10, sizeCar.height),
-                  angle*180/M_PI).points(vertices2f);
+                  angle.degrees).points(vertices2f);
 
   for(int i = 0; i < 4; ++i)
   {
@@ -32,6 +32,6 @@ void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, float angle, f
   //            , 1, 1, carColor[1],3);
 }
 
-void Display::drawCarTire(cv::Point2f center, cv::Size2f scale, float angle){
-  cv::ellipse(display, cv::RotatedRect(center, scale, angle), cv::Scalar(0,0,0), -1, 4);
+void Display::drawCarTire(cv::Point2f center, cv::Size2f scale, Angle angle){
+  cv::ellipse(display, cv::RotatedRect(center, scale, angle.degrees), cv::Scalar(0,0,0), -1, 4);
 }
