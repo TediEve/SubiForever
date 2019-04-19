@@ -8,9 +8,15 @@ Car::Car(cv::Point2f pos, Angle angle){
 	this->angle = angle;
 }
 
-Car::Car(Car& car):Car(car.pos, car.angle){
+Car::Car(const Car& car):Car(car.pos, car.angle){
 
 }
+
+Car::Car(Car&& car):pos(std::move(pos)),angle(std::move(angle)){
+
+}
+
+Car& Car::operator=(const Car& car) = default;
 
 void Car::drawCar(Display image, Angle steerAngle){
   float widthT  = width/3;

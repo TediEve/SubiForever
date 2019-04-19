@@ -18,7 +18,7 @@ void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, Angle angle){
 
   cv::RotatedRect(cv::Point2f(posCar.x, posCar.y), 
                   cv::Size2f(sizeCar.width + 10, sizeCar.height),
-                  angle.getDegrees()*180/M_PI).points(vertices2f);
+                  angle.getDegrees()).points(vertices2f);
 
   for(int i = 0; i < 4; ++i)
   {

@@ -1,28 +1,38 @@
 #ifndef TESTIMPLHYBRIDASTAR_HPP
 #define TESTIMPLHYBRIDASTAR_HPP
-
+#include "AckermanModel.hpp"
 #include "Car.hpp"
 #include "Map.hpp"
 
-struct Node
+class Node
 {
+public:
   cv::Point2i posDiscrMap;
-  Car         carState;
-  float       realCost = 0.0;
+  Car         car;
+  float       cost = 0.0;
   float       heuristic = 0.0;
   Node*       parent;
+  bool        isVisited = false;
+  int  boundingBox;
+  Node();
+  //move constructor
+  Node(Node&& node);
+  Node(Car car, float cost, float heuristic, Node* parent, bool isVisited);
+  Node& operator=(const Node& node);
+  cv::Point2i getDiscreteCoordinates(cv::Point2f pos);
+  friend std::ostream& operator<<(std::ostream& os, const Node& node);
 };
 
 class Planner{
 private:
-  Node currNode;
-  int  boundingBox;
+
 public:
   /** initialize the curr node */
-  Planner(Car carState, float realCost, float heuristic);
-  cv::Point2i getDiscreteCoordinates(cv::Point2f pos);
-  void generateLegalStates(const Map& map, Node currNode, std::vector<Node>& legalStates);
-  bool collisionChecker();
+  Node currNode;
+  Planner();
+  Planner(Car carState, float realCost, float heuristic, Node* parent);
+  void generateLegalStates(Display display, const Map& map, Node currNode, std::vector<Node>& legalStates);
+  bool checkForColision(Display image, const Map& map, const Car& car);
   void planPath(const Map& map, cv::Point2f start, cv::Point2f goal);
   void updateNeighbours(const Map& map, std::vector<Node> open, std::vector<Node> closed, Node currNode);
   double heuristic();

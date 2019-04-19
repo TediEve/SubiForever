@@ -22,10 +22,12 @@ public:
     static constexpr float mass   = 500;
     static constexpr float length = 20;
     static constexpr float vel    = 5;
-
+    Angle  maxSteer               = Angle(degrees2radians(40));
     Car();
     Car(cv::Point2f pos, Angle angle);
-    Car(Car& car);
+    Car(const Car& car);
+    Car(Car&& car);
+    Car& operator=(const Car& car);
     void drawCar(Display image, Angle steerAngle);
     ~Car();
 };
