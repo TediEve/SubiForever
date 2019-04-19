@@ -31,6 +31,7 @@ Node::Node(Car car, float cost, float heuristic, Node* parent, bool isVisited){
 
 Node& Node::operator=(const Node& node) = default;
 
+
 cv::Point2i Node::getDiscreteCoordinates(cv::Point2f pos){
   return cv::Point2i(pos.x / boundingBox, pos.y / boundingBox);
 }
@@ -61,11 +62,13 @@ void Planner::generateLegalStates(Display display, const Map& map, Node node, st
   float cost = 0.0;
   float heuristic = 0.0;
   float steerStep = 10 * M_PI / 180;
+
   std::cout<<dynInput.steerAngle.radians<<std::endl;
   std::cout<<tmpCar.maxSteer.radians<<std::endl;
   while(dynInput.steerAngle.radians < tmpCar.maxSteer.radians){
     ackermanOn.ackermanSteering(tmpCar, dynInput);
     dynInput.steerAngle = Angle(dynInput.steerAngle.radians+ steerStep);
+
     if(!checkForColision(display, map, tmpCar)){
       legalStates.push_back(Node(tmpCar, cost, heuristic, &node, false));
       std::cout<<"found legal\n";

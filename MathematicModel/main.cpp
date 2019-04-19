@@ -8,9 +8,7 @@
 #include "AckermanModel.hpp"
 #include "DrawUtils.hpp"
 #include "Map.hpp"
-
-// using namespace std;
-// using namespace cv;
+#include "TestImplHybridAstar.hpp"
 
 void printMatrInd(std::vector<bool> v, int width){
     for (unsigned int i = 0; i < v.size(); ++i)
@@ -21,19 +19,32 @@ void printMatrInd(std::vector<bool> v, int width){
         }
         std::cout<<i<<" ";
 
+
     }
+    std::cout<<i<<" ";
+
+  }
 }
+
+// template<typename vecT>
+// void printV(std::vector<vecT> v){
+//   for (std::vector<vecT>::iterator i = v.begin(); i != v.end(); ++i)
+//   {
+//     std::cout<<*i<<" ";
+//   }
+//   std::cout<<std::endl;
+// }
 
 double distanceCalculate(cv::Point p1, cv::Point p2)
 {
-    double x = p1.x - p2.x; //calculating number to square in next step
-    double y = p1.y - p2.y;
-    double dist;
+  double x = p1.x - p2.x; //calculating number to square in next step
+  double y = p1.y - p2.y;
+  double dist;
 
-    dist = pow(x, 2) + pow(y, 2);       //calculating Euclidean distance
-    dist = sqrt(dist);                  
+  dist = pow(x, 2) + pow(y, 2);     //calculating Euclidean distance
+  dist = sqrt(dist);          
 
-    return dist;
+  return dist;
 }
 
 int mx, my;
@@ -47,33 +58,33 @@ Display display;
 
 void mcb(int event, int x, int y, int flags, void* userdata)
 {
-    mx = x;
-    my = y;
-    if(event == cv::EVENT_LBUTTONDOWN) mc[0] = 1;
-    if(event == cv::EVENT_LBUTTONUP) mc[0] = 0;
-    if(event == cv::EVENT_RBUTTONDOWN) mc[1] = 1;
-    if(event == cv::EVENT_RBUTTONUP) mc[1] = 0;
+  mx = x;
+  my = y;
+  if(event == cv::EVENT_LBUTTONDOWN) mc[0] = 1;
+  if(event == cv::EVENT_LBUTTONUP) mc[0] = 0;
+  if(event == cv::EVENT_RBUTTONDOWN) mc[1] = 1;
+  if(event == cv::EVENT_RBUTTONUP) mc[1] = 0;
 }
 
 void onPathDrawing(int event, int x, int y, int flags, void* userdata)
 {
-    cv::Point p = cv::Point(x,y);
+  cv::Point p = cv::Point(x,y);
+  
+  if(cv::MouseEventFlags::EVENT_FLAG_LBUTTON == event)
+  {
+    pointsCount++;
+    pathPoints.push_back(p);
+    //  pathPoints.size();
     
-    if(cv::MouseEventFlags::EVENT_FLAG_LBUTTON == event)
-    {
-        pointsCount++;
-        pathPoints.push_back(p);
-      //  pathPoints.size();
-        
-        cv::circle(display.display, cv::Point(x,y), 0, cv::Scalar(0, 0, 255), 15);
+    cv::circle(display.display, cv::Point(x,y), 0, cv::Scalar(0, 0, 255), 15);
 
-        if(pointsCount == 1) return;
-        
-        cv::Point prevPoint = pathPoints[pointsCount - 2];
-        
-       cv::line(display.display, p, prevPoint , cv::Scalar(0,0,255), 10);
+    if(pointsCount == 1) return;
+    
+    cv::Point prevPoint = pathPoints[pointsCount - 2];
+    
+     cv::line(display.display, p, prevPoint , cv::Scalar(0,0,255), 10);
 
-    }
+  }
 }
 
 template<typename T>
@@ -116,13 +127,27 @@ void drawPath(T& car, std::string displayName)
 
             car.drawCar(display, currInput.steerAngle);
             display.del = true;
-            //wind.drawCar(State(car.pos.x, car.pos.y, car.angle));
-       
-        if(display.currChar == 27 )
-        {
-            break;
-        }
+
+      currInput.steerAngle = Angle(- car.angle.getRadians() + angleToGoal);
+      // currInput.velocity = 5;
+      std::cout<<currInput.steerAngle.getDegrees()<< " " << car.angle.getDegrees()<<std::endl;
+      useAckerman.ackermanSteering(car, currInput);
+      if(distCarGoal < 10 && pathPoints.size() > pointGoal){
+        pointGoal++;
+        currInput.velocity = 0;
+      }
+      //std::cout<<car.posx<<" "<<car.posy << " ";
+      // circle(display.display, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
+
+      car.drawCar(display, currInput.steerAngle);
+      display.del = true;
+      //wind.drawCar(State(car.posx, car.posy, car.angle));
+     
+    if(display.currChar == 27 )
+    {
+      break;
     }
+  }
 }
 
 
@@ -160,4 +185,5 @@ int main(int argc, char** argv)
     // imwrite("img.png",display.display);
     std::cout << "Bye bye! Come again! :) \n";
     return 0;
+
 }

@@ -15,6 +15,7 @@ public:
   bool        isVisited = false;
   int  boundingBox;
   Node();
+
   //move constructor
   Node(Node&& node);
   Node(Car car, float cost, float heuristic, Node* parent, bool isVisited);
