@@ -8,8 +8,6 @@ Map::Map(Display image, std::vector<bool> where){
 
 
 void Map::drawObstacle(Display image){
-  int i = 0;
-  // for(cv::Point3_<uint8_t> &p : cv::Mat_<cv::Point3_<uint8_t>>(image.display)){
   for( int i = 0; i < image.display.rows ; ++i){
     for(int j = 0; j < image.display.cols; ++j){
       if(obstacles[i*image.display.rows + j] == 1){

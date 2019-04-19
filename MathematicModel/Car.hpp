@@ -8,13 +8,14 @@
 
 
 #include "DrawUtils.hpp"
+#include "Utils.hpp"
 
 class Car
 {
 public:
     cv::Point2f pos = {0, 0};
 /** orientation of the car */
-    float angle;
+    Angle angle;
 
     static constexpr float width  = 40;
     static constexpr float height = 20;
@@ -23,9 +24,9 @@ public:
     static constexpr float vel    = 5;
 
     Car();
-    Car(cv::Point2f pos, float angle);
+    Car(cv::Point2f pos, Angle angle);
     Car(Car& car);
-    void drawCar(Display image, float steerAngle);
+    void drawCar(Display image, Angle steerAngle);
     ~Car();
 };
 

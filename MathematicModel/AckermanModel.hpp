@@ -14,7 +14,7 @@ struct DynamicInput
 	 * 1 forward
 	 */
 	float velocity;
-	float steerAngle;
+	Angle steerAngle;
 };
 
 struct AckermanModel

@@ -1,17 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   main.cpp
- * Author: User
- *
- * Created on 16 March 2019, 13:55
- */
-
-
 //fix the global mouse points vector
 //see how to read from the mouse
 
@@ -27,7 +13,7 @@
 // using namespace cv;
 
 void printMatrInd(std::vector<bool> v, int width){
-    for (int i = 0; i < v.size(); ++i)
+    for (unsigned int i = 0; i < v.size(); ++i)
     {
         /* code */
         if(i % width == 0){
@@ -94,7 +80,6 @@ template<typename T>
 void drawPath(T& car, std::string displayName)
 {
     display.displayName = displayName;
-    double minDist = 10000;
     pathPoints.push_back(cv::Point(car.pos.x, car.pos.y));
 
     cv::namedWindow(displayName);
@@ -104,7 +89,7 @@ void drawPath(T& car, std::string displayName)
     DynamicInput currInput = {0};
     AckermanModel useAckerman;
     // bool del = 0 ;
-    int pointGoal = 1;
+    unsigned int pointGoal = 1;
 
     while(true)
     {    
@@ -114,13 +99,13 @@ void drawPath(T& car, std::string displayName)
             car.drawCar(display, currInput.steerAngle);
             display.del = false;
             }
-            double angleToGoal = atan2((car.pos.y - pathPoints[pointGoal].y), (car.pos.x - pathPoints[pointGoal].x))*(180/M_PI);
+            double angleToGoal = atan2((car.pos.y - pathPoints[pointGoal].y), (car.pos.x - pathPoints[pointGoal].x));
             double distCarGoal = distanceCalculate(cv::Point(car.pos.x, car.pos.y), pathPoints[pointGoal]);
             //std::cout<<distCarGoal<< " ";
              
-            currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
+            currInput.steerAngle = - car.angle.radians + angleToGoal;
             currInput.velocity = 5;
-            std::cout<<currInput.steerAngle<< " " << car.angle<<std::endl;
+            std::cout<<currInput.steerAngle.getDegrees()<< " " << car.angle.getDegrees()<<std::endl;
             useAckerman.ackermanSteering(car, currInput);
             if(distCarGoal < 10 && pathPoints.size() > pointGoal){
                 pointGoal++;

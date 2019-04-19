@@ -33,5 +33,5 @@ void Planner::updateNeighbours(const Map& map, std::vector<Node> open, std::vect
 }
 
 double Planner::heuristic(){
-
+  return 0.0;
 }
