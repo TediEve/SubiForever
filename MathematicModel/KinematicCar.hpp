@@ -12,11 +12,11 @@ public:
     // back tires and the center of gravity
     float lateralDist     = length/2;
     // the velocity vector according to the C.G. and Ox
-    Angle angleVel        = 0.0;
+    Angle angleVel        = Angle(0.0f);
     // accelaration vector of C.G. - should be constant
     float acceleration    = 0.0;
     // the steer angle of the front tires in ackerman
-    Angle steerAngle      = 0.0;
+    Angle steerAngle      = Angle(0.0f);
 
     KinematicCar();
     KinematicCar(cv::Point2f pos, Angle angle, Angle angleVel);

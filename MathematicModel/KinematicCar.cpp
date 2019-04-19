@@ -2,9 +2,9 @@
 
 KinematicCar::KinematicCar(){
   this->inertialHeading = 0.0;
-  this->angleVel        = 0.0;
+  this->angleVel        = Angle(0.0f);
   this->acceleration    = 0.0;
-  this->steerAngle      = 0.0;
+  this->steerAngle      = Angle(0.0f);
 }
 
 KinematicCar::KinematicCar(cv::Point2f pos, Angle angle, Angle angleVel)

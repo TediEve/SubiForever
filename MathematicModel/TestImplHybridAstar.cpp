@@ -48,12 +48,17 @@ void Planner::generateLegalStates(Display display, const Map& map, Node node, st
   Car tmpCar = node.car;
   float cost = 0.0;
   float heuristic = 0.0;
-  while(dynInput.steerAngle.degrees < tmpCar.maxSteer){
+  float steerStep = 10 * M_PI / 180;
+  std::cout<<dynInput.steerAngle.getRadians()<<std::endl;
+  std::cout<<tmpCar.maxSteer<<std::endl;
+  while(dynInput.steerAngle.getRadians() < tmpCar.maxSteer){
     ackermanOn.ackermanSteering(tmpCar, dynInput);
-    dynInput.steerAngle = Angle(dynInput.steerAngle.radians + 10);
+    dynInput.steerAngle = Angle(dynInput.steerAngle.getRadians() + steerStep);
     if(!checkForColision(display, map, tmpCar)){
       legalStates.push_back(Node(tmpCar, cost, heuristic, &node, false));
+      std::cout<<"found legal\n";
     }
+    std::cout<<"not legal\n";
   }
 
 }
@@ -67,14 +72,14 @@ void Planner::updateNeighbours(const Map& map, std::vector<Node> open, std::vect
 }
 
 double Planner::heuristic(){
-
+  return 0.0;
 }
 
 bool Planner::checkForColision(Display image, const Map& map, const Car& car){
   cv::Mat carMat;
 
   auto carBound = cv::RotatedRect(car.pos, cv::Size2f(car.width + 10, car.length),
-                                  car.angle.degrees);
+                                  car.angle.getDegrees());
 
   if(car.pos.x < 0 || car.pos.y < 0 || car.pos.x > image.display.rows ||
      car.pos.y > image.display.cols){

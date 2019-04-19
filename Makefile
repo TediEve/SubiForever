@@ -2,7 +2,8 @@ Sources= MathematicModel/Utils.cpp MathematicModel/DrawUtils.cpp MathematicModel
 Target = ack
 
 # general compiler settings
-CXXFLAGS =  -Wall -O3 -ffast-math -w
+#set flag -02 when ready for shipping
+CXXFLAGS = -ggdb -Wall
 LIBS = `pkg-config --libs opencv`
 
 all:

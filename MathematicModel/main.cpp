@@ -11,7 +11,7 @@
 #include "TestImplHybridAstar.hpp"
 
 void printMatrInd(std::vector<bool> v, int width){
-  for (int i = 0; i < v.size(); ++i)
+  for (unsigned int i = 0; i < v.size(); ++i)
   {
     /* code */
     if(i % width == 0){
@@ -87,7 +87,6 @@ template<typename T>
 void drawPath(T& car, std::string displayName)
 {
   display.displayName = displayName;
-  double minDist = 10000;
   pathPoints.push_back(car.pos);
 
   cv::namedWindow(displayName);
@@ -97,7 +96,7 @@ void drawPath(T& car, std::string displayName)
   DynamicInput currInput = {0};
   AckermanModel useAckerman;
   // bool del = 0 ;
-  int pointGoal = 1;
+  unsigned int pointGoal = 1;
 
   while(true)
   {  
@@ -111,9 +110,9 @@ void drawPath(T& car, std::string displayName)
       double distCarGoal = distanceCalculate(car.pos, pathPoints[pointGoal]);
       //std::cout<<distCarGoal<< " ";
        
-      currInput.steerAngle = Angle(- car.angle.radians + angleToGoal);
+      currInput.steerAngle = Angle(- car.angle.getRadians() + angleToGoal);
       // currInput.velocity = 5;
-      std::cout<<currInput.steerAngle.degrees<< " " << car.angle.degrees<<std::endl;
+      std::cout<<currInput.steerAngle.getDegrees()<< " " << car.angle.getDegrees()<<std::endl;
       useAckerman.ackermanSteering(car, currInput);
       if(distCarGoal < 10 && pathPoints.size() > pointGoal){
         pointGoal++;
@@ -138,26 +137,27 @@ void drawPath(T& car, std::string displayName)
 
 int main(int argc, char** argv)
 {
-  // Car car(cv::Point2f(50, 50), Angle(0.0));
-  // // drawPath(car, "Kinematic Monocycle Model");
-  // KinematicCar kincar(cv::Point2f(50, 50), Angle(0.0), Angle(0.5));
-  Node* par;
-  Planner ast(Car(cv::Point2f(10, 10), Angle(0.0)), 0.0, 0.0, par);
+  Car car(cv::Point2f(50, 50), Angle(0.0f));
+  drawPath(car, "Kinematic Monocycle Model");
+  // KinematicCar kincar(cv::Point2f(50, 50), Angle(0.0f), Angle(0.5f));
+  // Node* par = nullptr;
+  // Planner ast(Car(cv::Point2f(10, 10), Angle(0.0f)), 0.0, 0.0, par);
   // drawPath(kincar, "Kinematic Bicycle Model");
-  std::vector<bool> v(display.display.rows * display.display.cols);
-  Map map(display, v);
-  map.makeBorder(display);
-  map.drawObstacle(display);
-  display.show(10);
-  imwrite("img.png",display.display);
-  std::cout<<ast.checkForColision(display, map, Car(cv::Point2f(10, 10), Angle(0.0)));
-  std::vector<Node> genSt;
-  ast.generateLegalStates(display, map, ast.currNode, genSt);
-  for (std::vector<Node>::iterator i = genSt.begin(); i != genSt.end(); ++i)
-  {
-    std::cout<<*i<<" ";
-  }
-  std::cout<<std::endl;
+  // std::vector<bool> v(display.display.rows * display.display.cols);
+  // Map map(display, v);
+  // map.makeBorder(display);
+  // map.drawObstacle(display);
+  // display.show(10);
+  // imwrite("img.png",display.display);
+  // std::cout<<ast.checkForColision(display, map, Car(cv::Point2f(10, 10), Angle(0.0f)));
+  // std::vector<Node> genSt;
+  // int cnt = 0;
+  // ast.generateLegalStates(display, map, ast.currNode, genSt);
+  // for (std::vector<Node>::iterator i = genSt.begin(); i != genSt.end(); ++i)
+  // {
+  //   std::cout<<cnt++<<" ";
+  // }
+  // std::cout<<std::endl;
   // for (int i = 0; i < v.size(); ++i)
   // {
   //   if (i > 100 && i < 200)

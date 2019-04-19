@@ -8,6 +8,7 @@
 
 
 #include "DrawUtils.hpp"
+#include "Utils.hpp"
 
 class Car
 {
@@ -22,7 +23,8 @@ public:
     static constexpr float length   = 20;
     //delete
     static constexpr float vel      = 5;
-    static constexpr float maxSteer = 40;
+    //convert it to radians
+    static constexpr float maxSteer = degrees2radians(40);
 
     Car();
     Car(cv::Point2f pos, Angle angle);

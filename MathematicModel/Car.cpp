@@ -1,7 +1,7 @@
 #include "Car.hpp"
 Car::Car(){
     this->pos   = {0.0, 0.0};
-    this->angle = Angle(0.0);
+    this->angle = Angle(0.0f);
 }
 Car::Car(cv::Point2f pos, Angle angle){
 	this->pos   = pos;
