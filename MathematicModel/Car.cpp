@@ -1,5 +1,6 @@
 #include "Car.hpp"
 Car::Car(){
+
     this->pos  = {0, 0};
     this->angle = 0;
 }
@@ -23,6 +24,7 @@ void Car::drawCar(Display image, Angle steerAngle){
   float heightT = height/6;
   image.drawCarBody(pos, cv::Size2f(width, length), angle);
   image.drawCarTire(pos, cv::Size2f(widthT, heightT), steerAngle);
+
 }
 
 Car::~Car(){

@@ -19,9 +19,8 @@ struct DynamicInput
 
 struct AckermanModel
 {
-	double const pi = 3.14159265359;
-	double dt = 0.1;
-	void ackermanSteering(Car& car, const DynamicInput& kinem);
-	void ackermanSteering(KinematicCar& car, const DynamicInput& kinem);
+  double dt = 0.1;
+  void ackermanSteering(Car& car, const DynamicInput& kinem);
+  void ackermanSteering(KinematicCar& car, const DynamicInput& kinem);
 }; 
 #endif

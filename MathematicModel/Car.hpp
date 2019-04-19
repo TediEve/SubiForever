@@ -28,6 +28,7 @@ public:
     Car(const Car& car);
     Car(Car&& car);
     Car& operator=(const Car& car);
+
     void drawCar(Display image, Angle steerAngle);
     ~Car();
 };

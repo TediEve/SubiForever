@@ -6,6 +6,7 @@ float Angle::getDegrees() const{
 
 Angle::Angle(){
   this->radians = 0.0f;
+
 }
 
 Angle::Angle(float radians){
@@ -15,3 +16,5 @@ Angle::Angle(float radians){
 Angle::Angle(const Angle& angle):Angle(angle.radians){
 
 }
+
+

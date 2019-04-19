@@ -5,7 +5,9 @@ void Display::show(int t){
     currChar = cv::waitKey(t);
 }
 
+
 void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, Angle angle){
+
   cv::Scalar carColor[2] = {cv::Scalar(255, 0, 0), cv::Scalar(255, 255, 255)};
   if(del)
   { 
@@ -13,10 +15,9 @@ void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, Angle angle){
     carColor[1] = cv::Scalar(122, 122, 122);
   }
 
-  // cv::Scalar carColorSc = carColor;
   cv::Point2f vertices2f[4];
 
-  cv::RotatedRect(cv::Point2f(posCar.x, posCar.y), 
+  cv::RotatedRect(posCar, 
                   cv::Size2f(sizeCar.width + 10, sizeCar.height),
                   angle.getDegrees()).points(vertices2f);
 
