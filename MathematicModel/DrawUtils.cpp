@@ -5,7 +5,9 @@ void Display::show(int t){
     currChar = cv::waitKey(t);
 }
 
-void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, Angle angle/*, Angle steerAngle*/){
+
+void Display::drawCarBody(cv::Point2f posCar, cv::Size2f sizeCar, Angle angle){
+
   cv::Scalar carColor[2] = {cv::Scalar(255, 0, 0), cv::Scalar(255, 255, 255)};
   if(del)
   { 

@@ -6,12 +6,8 @@
 class Angle
 {
 private:
-  float degrees = 0.0;
   float radians = 0.0;
-public:
   float getDegrees() const;
-  float getRadians() const;
-  void setRadians(const float radians);
   Angle();
   Angle(float radians);
   Angle(const Angle& angle);

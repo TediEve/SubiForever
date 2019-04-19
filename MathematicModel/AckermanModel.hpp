@@ -8,14 +8,13 @@
 
 struct DynamicInput
 {
-  /* three states
-   * -1 backward
-   * 0 stop
-   * 1 forward
-   */
-  float velocity = 5;
-  //in radians
-  Angle steerAngle = Angle(10);
+	/* three states
+	 * -1 backward
+	 * 0 stop
+	 * 1 forward
+	 */
+	float velocity;
+	Angle steerAngle;
 };
 
 struct AckermanModel

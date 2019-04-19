@@ -11,11 +11,15 @@
 #include "TestImplHybridAstar.hpp"
 
 void printMatrInd(std::vector<bool> v, int width){
-  for (unsigned int i = 0; i < v.size(); ++i)
-  {
-    /* code */
-    if(i % width == 0){
-      std::cout<<std::endl;
+    for (unsigned int i = 0; i < v.size(); ++i)
+    {
+        /* code */
+        if(i % width == 0){
+            std::cout<<std::endl;
+        }
+        std::cout<<i<<" ";
+
+
     }
     std::cout<<i<<" ";
 
@@ -86,30 +90,44 @@ void onPathDrawing(int event, int x, int y, int flags, void* userdata)
 template<typename T>
 void drawPath(T& car, std::string displayName)
 {
-  display.displayName = displayName;
-  pathPoints.push_back(car.pos);
+    display.displayName = displayName;
+    pathPoints.push_back(cv::Point(car.pos.x, car.pos.y));
 
-  cv::namedWindow(displayName);
-  // circle(display.display, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
-  cv::setMouseCallback(displayName, onPathDrawing);
+    cv::namedWindow(displayName);
+    // circle(display.display, Point(car.pos.x, car.pos.y), 20, Scalar(0, 0, 255), 2);
+    cv::setMouseCallback(displayName, onPathDrawing);
    
-  DynamicInput currInput = {0};
-  AckermanModel useAckerman;
-  // bool del = 0 ;
-  unsigned int pointGoal = 1;
+    DynamicInput currInput = {0};
+    AckermanModel useAckerman;
+    // bool del = 0 ;
+    unsigned int pointGoal = 1;
 
-  while(true)
-  {  
-      display.show(10);
-      if(display.del)
-      {
-      car.drawCar(display, currInput.steerAngle);
-      display.del = false;
-      }
-      double angleToGoal = atan2((car.pos.y - pathPoints[pointGoal].y), (car.pos.x - pathPoints[pointGoal].x));
-      double distCarGoal = distanceCalculate(car.pos, pathPoints[pointGoal]);
-      //std::cout<<distCarGoal<< " ";
-       
+    while(true)
+    {    
+            display.show(10);
+            if(display.del)
+            {
+            car.drawCar(display, currInput.steerAngle);
+            display.del = false;
+            }
+            double angleToGoal = atan2((car.pos.y - pathPoints[pointGoal].y), (car.pos.x - pathPoints[pointGoal].x));
+            double distCarGoal = distanceCalculate(cv::Point(car.pos.x, car.pos.y), pathPoints[pointGoal]);
+            //std::cout<<distCarGoal<< " ";
+             
+            currInput.steerAngle = - car.angle.radians + angleToGoal;
+            currInput.velocity = 5;
+            std::cout<<currInput.steerAngle.getDegrees()<< " " << car.angle.getDegrees()<<std::endl;
+            useAckerman.ackermanSteering(car, currInput);
+            if(distCarGoal < 10 && pathPoints.size() > pointGoal){
+                pointGoal++;
+                currInput.velocity = 0;
+            }
+            //std::cout<<car.pos.x<<" "<<car.pos.y << " ";
+            // circle(display.display, Point(car.pos.x, car.pos.y), 20, Scalar(0,0,255),2);
+
+            car.drawCar(display, currInput.steerAngle);
+            display.del = true;
+
       currInput.steerAngle = Angle(- car.angle.getRadians() + angleToGoal);
       // currInput.velocity = 5;
       std::cout<<currInput.steerAngle.getDegrees()<< " " << car.angle.getDegrees()<<std::endl;
@@ -137,44 +155,35 @@ void drawPath(T& car, std::string displayName)
 
 int main(int argc, char** argv)
 {
-  Car car(cv::Point2f(50, 50), Angle(0.0f));
-  drawPath(car, "Kinematic Monocycle Model");
-  // KinematicCar kincar(cv::Point2f(50, 50), Angle(0.0f), Angle(0.5f));
-  // Node* par = nullptr;
-  // Planner ast(Car(cv::Point2f(10, 10), Angle(0.0f)), 0.0, 0.0, par);
-  // drawPath(kincar, "Kinematic Bicycle Model");
-  // std::vector<bool> v(display.display.rows * display.display.cols);
-  // Map map(display, v);
-  // map.makeBorder(display);
-  // map.drawObstacle(display);
-  // display.show(10);
-  // imwrite("img.png",display.display);
-  // std::cout<<ast.checkForColision(display, map, Car(cv::Point2f(10, 10), Angle(0.0f)));
-  // std::vector<Node> genSt;
-  // int cnt = 0;
-  // ast.generateLegalStates(display, map, ast.currNode, genSt);
-  // for (std::vector<Node>::iterator i = genSt.begin(); i != genSt.end(); ++i)
-  // {
-  //   std::cout<<cnt++<<" ";
-  // }
-  // std::cout<<std::endl;
-  // for (int i = 0; i < v.size(); ++i)
-  // {
-  //   if (i > 100 && i < 200)
-  //   {
-  //     v[i] = 1;
-  //   }
-  //   else{
-  //     v[i] = 0;
-  //   }
-  // }
-  // display.displayName = "test";
-  
-  // Map map(display, v);
-  // map.makeBorder(display);
-  // map.drawObstacle(display);
-  // display.show(10);
-  // imwrite("img.png",display.display);
-  std::cout << "\n Bye bye! Come again! :) \n";
-  return 0;
+
+    // DynamicInput currInput = {0};
+    // AckermanModel useAckerman;
+
+    Car car(cv::Point2f(50,50),0.0f);
+    drawPath(car, "Kinematic Monocycle Model");
+    // KinematicCar kincar(50,50,0.0f,0.5f);
+
+    // drawPath(kincar, "Kinematic Bicycle Model");
+    // std::vector<bool> v(display.display.rows * display.display.cols);
+
+    // for (int i = 0; i < v.size(); ++i)
+    // {
+    //     if (i > 100 && i < 200)
+    //     {
+    //         v[i] = 1;
+    //     }
+    //     else{
+    //         v[i] = 0;
+    //     }
+    // }
+    // display.displayName = "test";
+    
+    // Map map(display, v);
+    // map.makeBorder(display);
+    // map.drawObstacle(display);
+    // display.show(10);
+    // imwrite("img.png",display.display);
+    std::cout << "Bye bye! Come again! :) \n";
+    return 0;
+
 }

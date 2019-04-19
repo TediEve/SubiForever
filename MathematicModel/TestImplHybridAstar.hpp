@@ -15,7 +15,11 @@ public:
   bool        isVisited = false;
   int  boundingBox;
   Node();
+
+  //move constructor
+  Node(Node&& node);
   Node(Car car, float cost, float heuristic, Node* parent, bool isVisited);
+  Node& operator=(const Node& node);
   cv::Point2i getDiscreteCoordinates(cv::Point2f pos);
   friend std::ostream& operator<<(std::ostream& os, const Node& node);
 };
