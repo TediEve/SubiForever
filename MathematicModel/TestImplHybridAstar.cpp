@@ -1,32 +1,40 @@
 #include "TestImplHybridAstar.hpp"
 
+Node::Node(){
+  this->car         = Car();
+  this->cost        = 0.0;
+  this->heuristic   = 0.0;
+  this->parent      = nullptr;
+  this->isVisited   = false;
+  this->posDiscrMap = getDiscreteCoordinates(car.pos);
+  this->boundingBox = car.length * 2;
+}
+Node::Node(Car car, float cost, float heuristic, Node* parent, bool isVisited){
+  this->car         = car;
+  this->cost        = cost;
+  this->heuristic   = heuristic;
+  this->parent      = parent;
+  this->isVisited   = isVisited;
+  this->posDiscrMap = getDiscreteCoordinates(car.pos);
+  this->boundingBox = car.length * 2;
+}
+
+cv::Point2i Node::getDiscreteCoordinates(cv::Point2f pos){
+  return cv::Point2i(pos.x / boundingBox, pos.y / boundingBox);
+}
+
 std::ostream& operator<<(std::ostream& os, const Node& node){
-  os<<node.carState.pos.x<<" : "<<node.carState.pos.y<<"\n";
+  os<<node.car.pos.x<<" : "<<node.car.pos.y<<"\n";
   return os;
 }
 
 Planner::Planner(){
-  this->currNode.carState    = Car();
-  this->currNode.realCost    = 0.0;
-  this->currNode.heuristic   = 0.0;
-  this->currNode.parent      = &this->currNode;
-  this->currNode.posDiscrMap = getDiscreteCoordinates(currNode.carState.pos);
-  this->boundingBox          = currNode.carState.length * 2;
+  this->currNode    = Node();
 }
 
 Planner::Planner(Car carState, float realCost, float heuristic, Node* parent){
-  this->currNode.carState    = Car(carState);
-  this->currNode.realCost    = realCost;
-  this->currNode.heuristic   = heuristic;
-  this->currNode.parent      = parent;
-  this->currNode.posDiscrMap = getDiscreteCoordinates(currNode.carState.pos);
-  this->boundingBox          = carState.length * 2;
+  this->currNode    = Node(carState, realCost, heuristic, parent, false);
 }
-
-cv::Point2i Planner::getDiscreteCoordinates(cv::Point2f pos){
-  return cv::Point2i(pos.x / boundingBox, pos.y / boundingBox);
-}
-
 
 double Planner::eucledeanDistance(cv::Point2f from, cv::Point2f to){
   float x = from.x - to.x;
@@ -37,15 +45,15 @@ double Planner::eucledeanDistance(cv::Point2f from, cv::Point2f to){
 void Planner::generateLegalStates(Display display, const Map& map, Node node, std::vector<Node>& legalStates){
   DynamicInput dynInput;
   AckermanModel ackermanOn;
-  Car tmpCar = node.carState;
+  Car tmpCar = node.car;
+  float cost = 0.0;
+  float heuristic = 0.0;
   while(dynInput.steerAngle.degrees < tmpCar.maxSteer){
     ackermanOn.ackermanSteering(tmpCar, dynInput);
     dynInput.steerAngle = Angle(dynInput.steerAngle.radians + 10);
-    //check for obstacles
     if(!checkForColision(display, map, tmpCar)){
-      legalStates.push_back(tmpCar);
+      legalStates.push_back(Node(tmpCar, cost, heuristic, &node, false));
     }
-
   }
 
 }
@@ -62,7 +70,7 @@ double Planner::heuristic(){
 
 }
 
-bool Planner::ckeckForColision(Display image, const Map& map, const Car& car){
+bool Planner::checkForColision(Display image, const Map& map, const Car& car){
   cv::Mat carMat;
 
   auto carBound = cv::RotatedRect(car.pos, cv::Size2f(car.width + 10, car.length),

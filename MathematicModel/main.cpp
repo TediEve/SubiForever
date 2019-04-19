@@ -150,7 +150,7 @@ int main(int argc, char** argv)
   map.drawObstacle(display);
   display.show(10);
   imwrite("img.png",display.display);
-  std::cout<<ast.ckeckForColision(display, map, Car(cv::Point2f(10, 10), Angle(0.0)));
+  std::cout<<ast.checkForColision(display, map, Car(cv::Point2f(10, 10), Angle(0.0)));
   std::vector<Node> genSt;
   ast.generateLegalStates(display, map, ast.currNode, genSt);
   for (std::vector<Node>::iterator i = genSt.begin(); i != genSt.end(); ++i)
