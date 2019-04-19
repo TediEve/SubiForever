@@ -5,7 +5,7 @@
 
 class Angle
 {
-private:
+public:
   float radians = 0.0;
   float getDegrees() const;
   Angle();

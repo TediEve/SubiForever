@@ -21,9 +21,6 @@ void printMatrInd(std::vector<bool> v, int width){
 
 
     }
-    std::cout<<i<<" ";
-
-  }
 }
 
 // template<typename vecT>
@@ -128,7 +125,7 @@ void drawPath(T& car, std::string displayName)
             car.drawCar(display, currInput.steerAngle);
             display.del = true;
 
-      currInput.steerAngle = Angle(- car.angle.getRadians() + angleToGoal);
+      currInput.steerAngle = Angle(- car.angle.radians + angleToGoal);
       // currInput.velocity = 5;
       std::cout<<currInput.steerAngle.getDegrees()<< " " << car.angle.getDegrees()<<std::endl;
       useAckerman.ackermanSteering(car, currInput);

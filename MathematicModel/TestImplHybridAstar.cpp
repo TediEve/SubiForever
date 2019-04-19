@@ -10,12 +10,12 @@ Node::Node(){
   this->boundingBox = car.length * 2;
 }
 
-Node::Node(Node&& node):car(std::move(node.car)),
+Node::Node(Node&& node):posDiscrMap(std::move(node.posDiscrMap)),
+                        car(std::move(node.car)),
                         cost(node.cost),
                         heuristic(node.heuristic),
                         parent(std::move(node.parent)),
                         isVisited(node.isVisited),
-                        posDiscrMap(std::move(node.posDiscrMap)),
                         boundingBox(node.boundingBox){
 }
 
