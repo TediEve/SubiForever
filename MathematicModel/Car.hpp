@@ -8,23 +8,27 @@
 
 
 #include "DrawUtils.hpp"
+#include "Utils.hpp"
 
 class Car
 {
 public:
-    float posx;
-    float posy;
-    float angle;
+    cv::Point2f pos = {0, 0};
+/** orientation of the car */
+    Angle angle;
 
-    const float width  = 40;
-    const float height = 20;
-    const float mass   = 500;
-    const float length = 20;
-    const float vel    = 5;
-
+    static constexpr float width  = 40;
+    static constexpr float height = 20;
+    static constexpr float mass   = 500;
+    static constexpr float length = 20;
+    static constexpr float vel    = 5;
+    Angle  maxSteer               = Angle(degrees2radians(40));
     Car();
-    Car(float posx, float posy, float angle);
-    void drawCar(Display image, float steerAngle);
+    Car(cv::Point2f pos, Angle angle);
+    Car(const Car& car);
+    Car(Car&& car);
+    Car& operator=(const Car& car);
+    void drawCar(Display image, Angle steerAngle);
     ~Car();
 };
 
