@@ -12,8 +12,7 @@
 class Car
 {
 public:
-    float posx;
-    float posy;
+    cv::Point2f pos = {0, 0};
 /** orientation of the car */
     float angle;
 
@@ -24,7 +23,7 @@ public:
     static constexpr float vel    = 5;
 
     Car();
-    Car(float posx, float posy, float angle);
+    Car(cv::Point2f pos, float angle);
     Car(Car& car);
     void drawCar(Display image, float steerAngle);
     ~Car();

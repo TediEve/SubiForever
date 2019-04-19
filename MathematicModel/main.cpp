@@ -95,10 +95,10 @@ void drawPath(T& car, std::string displayName)
 {
     display.displayName = displayName;
     double minDist = 10000;
-    pathPoints.push_back(cv::Point(car.posx, car.posy));
+    pathPoints.push_back(cv::Point(car.pos.x, car.pos.y));
 
     cv::namedWindow(displayName);
-    // circle(display.display, Point(car.posx, car.posy), 20, Scalar(0, 0, 255), 2);
+    // circle(display.display, Point(car.pos.x, car.pos.y), 20, Scalar(0, 0, 255), 2);
     cv::setMouseCallback(displayName, onPathDrawing);
    
     DynamicInput currInput = {0};
@@ -114,8 +114,8 @@ void drawPath(T& car, std::string displayName)
             car.drawCar(display, currInput.steerAngle);
             display.del = false;
             }
-            double angleToGoal = atan2((car.posy - pathPoints[pointGoal].y), (car.posx - pathPoints[pointGoal].x))*(180/M_PI);
-            double distCarGoal = distanceCalculate(cv::Point(car.posx, car.posy), pathPoints[pointGoal]);
+            double angleToGoal = atan2((car.pos.y - pathPoints[pointGoal].y), (car.pos.x - pathPoints[pointGoal].x))*(180/M_PI);
+            double distCarGoal = distanceCalculate(cv::Point(car.pos.x, car.pos.y), pathPoints[pointGoal]);
             //std::cout<<distCarGoal<< " ";
              
             currInput.steerAngle = - car.angle*180/M_PI + angleToGoal;
@@ -126,12 +126,12 @@ void drawPath(T& car, std::string displayName)
                 pointGoal++;
                 currInput.velocity = 0;
             }
-            //std::cout<<car.posx<<" "<<car.posy << " ";
-            // circle(display.display, Point(car.posx, car.posy), 20, Scalar(0,0,255),2);
+            //std::cout<<car.pos.x<<" "<<car.pos.y << " ";
+            // circle(display.display, Point(car.pos.x, car.pos.y), 20, Scalar(0,0,255),2);
 
             car.drawCar(display, currInput.steerAngle);
             display.del = true;
-            //wind.drawCar(State(car.posx, car.posy, car.angle));
+            //wind.drawCar(State(car.pos.x, car.pos.y, car.angle));
        
         if(display.currChar == 27 )
         {
@@ -149,12 +149,12 @@ int main(int argc, char** argv)
     // DynamicInput currInput = {0};
     // AckermanModel useAckerman;
 
-    // Car car(50,50,0.0f);
-    // // drawPath(car, "Kinematic Monocycle Model");
+    Car car(cv::Point2f(50,50),0.0f);
+    drawPath(car, "Kinematic Monocycle Model");
     // KinematicCar kincar(50,50,0.0f,0.5f);
 
     // drawPath(kincar, "Kinematic Bicycle Model");
-    std::vector<bool> v(display.display.rows * display.display.cols);
+    // std::vector<bool> v(display.display.rows * display.display.cols);
 
     // for (int i = 0; i < v.size(); ++i)
     // {
@@ -166,13 +166,13 @@ int main(int argc, char** argv)
     //         v[i] = 0;
     //     }
     // }
-    display.displayName = "test";
+    // display.displayName = "test";
     
-    Map map(display, v);
-    map.makeBorder(display);
-    map.drawObstacle(display);
-    display.show(10);
-    imwrite("img.png",display.display);
+    // Map map(display, v);
+    // map.makeBorder(display);
+    // map.drawObstacle(display);
+    // display.show(10);
+    // imwrite("img.png",display.display);
     std::cout << "Bye bye! Come again! :) \n";
     return 0;
 }

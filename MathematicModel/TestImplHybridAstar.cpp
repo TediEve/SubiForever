@@ -5,7 +5,7 @@ Planner::Planner(Car carState, float realCost, float heuristic){
   this->currNode.realCost    = realCost;
   this->currNode.heuristic   = heuristic;
   this->currNode.parent      = &this->currNode;
-  this->currNode.posDiscrMap = getDiscreteCoordinates(cv::Point2f(currNode.carState.posx, currNode.carState.posy));
+  this->currNode.posDiscrMap = getDiscreteCoordinates(currNode.carState.pos);
   this->boundingBox          = carState.length * 2;
 }
 

@@ -18,8 +18,8 @@ public:
     // the steer angle of the front tires in ackerman
     float steerAngle      = 0.0;
     KinematicCar();
-    KinematicCar(float posx, float posy, float angle, float angleVel);
-    KinematicCar(float posx, float posy, float angle, float inertialHeading,
+    KinematicCar(cv::Point2f, float angle, float angleVel);
+    KinematicCar(cv::Point2f, float angle, float inertialHeading,
                  float angleVel, float acceleration, float steerAngle);
     KinematicCar(const KinematicCar& car);
     void drawCar(Display image, float steerAngle);
