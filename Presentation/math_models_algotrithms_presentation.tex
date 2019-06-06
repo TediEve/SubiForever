@@ -8,7 +8,7 @@
 \usepackage{graphicx}
 \usepackage{tcolorbox}
 \usepackage{multimedia}
-
+\usepackage{cancel}
 \usefonttheme[onlymath]{serif}
 
 \makeatletter
@@ -229,10 +229,9 @@ cross/.default={1pt}}
     \end{frame}
     \subsection{Динамичен модел}
     \label{dynamic}
-    \subsection{Динамичен модел}
-    \label{dynamic}
     \begin{frame}
       \frametitle{Динамичен модел на двуколесно превозно средство\\/Dynamic Bicycle Model/}
+      \only<2>{\framesubtitle{Извеждане на модела}}
       \begin{columns}
       \column{0.5\textwidth}
       
@@ -248,7 +247,8 @@ cross/.default={1pt}}
         \draw[->] (2.25,1.35) -- (2.35,2.55);
         \draw[->, densely dashed, brown] (2.25, 1.35) -- (3.25, 1.94);
         \draw[->, densely dashed, brown] (2.25, 1.35) -- (1.75, 2.35);
-        \draw[->, densely dashed, brown] (1.5,  0.94) -- (1,    1.94)node[anchor=north]{\tiny$y$};
+        % \draw[->, densely dashed, brown] (1.5,  0.94) -- (1,    1.94)node[anchor=north]{\tiny$y$};
+        \draw[->, densely dashed, brown] (1.5,  0.94) -- (2,    0)node[anchor=north]{\tiny$y$};
         \draw[->, densely dashed, brown] (1.5,  0.94) -- (2,  1.2)node[anchor=north]{\tiny$x$};
         \draw[->, gray] (1.5,0.94) -- (2.5, 0.94);
         \draw[->, gray] (1.5,0.94) -- (1.5, 1.94);
@@ -267,9 +267,9 @@ theta     \draw[<->] (1.6,0.7) -- (2.35,1.11) node[left = 15pt, below = 4pt]{\ti
       \column{0.5\textwidth}
       \only<1>{\tiny{\begin{block}{Модел}
               \begin{align*}
-                \ddot{x}      &= \dot{\theta}\dot{y}\\
-                \ddot{y}      &= -\dot{\theta}\dot{x} + \frac{2}{m}(F_{c,f}cos\beta + F_{c,r})\\
-                \ddot{\theta}   &= \frac{2}{I_z}(l_f F_{c,f} - l_r F_{c,r}))\\
+                \ddot{x}      &= \dot{y}\dot{\theta} - \frac{F_{c,f}{sin\beta}}{m}\\
+                \ddot{y}      &= -\dot{\theta}\dot{x} + \frac{1}{m}(F_{c,f}cos\beta + F_{c,r})\\
+                \ddot{\theta}   &= \frac{1}{I_z}(l_f F_{c,f}cos\beta - l_r F_{c,r})\\
                 \dot{X}       &= \dot{x}cos\theta-\dot{y}sin\theta\\
                 \dot{Y}       &= \dot{x}sin\theta+\dot{y}cos\theta
               \end{align*}
@@ -281,12 +281,38 @@ theta     \draw[<->] (1.6,0.7) -- (2.35,1.11) node[left = 15pt, below = 4pt]{\ti
               \item[$\beta$]{Ъгъла на завъртане на гумите}
               \item[$l_{r/f}$]{Дължина на колата от ЦТ до остта на задните/предните гуми}
               \item[$F_{c,r/f}$]{Силите при задните/предните гуми}
-              \item[$I_z$]{инерциална маса}
+              \item[$I_z$]{инерциална момент}
+              \item[$m$]{маса на автомобила}
             \end{description}}}
         \only<2>{
+          \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+          От закона на Нютон:
+            \begin{align*}
+            &-F_{c,f}{sin\beta} = ma_x\\
+            &-F_{c,f}{sin\beta}=m(\ddot{x} - \dot{y}\dot{\theta})\\
+            &\ddot{x} = \dot{y}\dot{\theta} - \frac{F_{c,f}{sin\beta}}{m}
+            \end{align*}
+            и
+            \begin{align*}
+            &F_{c,f}cos\beta + F_{c_r} = ma_y\\
+            &F_{c,f}cos\beta + F_{c_r} = m(\ddot{y} + \dot{\theta}\dot{x})\\
+            &\ddot{y} = -\dot{\theta}\dot{x} + \frac{1}{m}(F_{c,f}cos\beta + F_{c,r})
+            \end{align*}
+          \end{tcolorbox}
+        }
+        \only<3>{
+          \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+          От закона за запазване на моментите:
+            \begin{align*}
+            &I_z\ddot{\theta} = l_f F_{c,f}cos\beta - l_r F_{c,r}\\
+            &\ddot{\theta} = \frac{1}{I_z}(l_f F_{c,f}cos\beta - l_r F_{c,r})
+            \end{align*}
+          \end{tcolorbox}
+        }
+        \only<4>{
           $F_{c,r/f}$ са базирани на линейния модел на гумите
           \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
-          $F_{c,f/r}=-C_{\alpha_{r/f}\alpha_{r/f}}$
+          $F_{c,f/r}=-2C_{\alpha_{r/f}}\alpha_{r/f}$
           \end{tcolorbox}
           Където 
           $\alpha_{r/f}$ е ъгъла на приплъзване съответно за задната/предната гума и $C_{\alpha_{r/f}}$ е коефициент за сцеплението при завой.
@@ -407,9 +433,9 @@ theta     \draw[<->] (1.6,0.7) -- (2.35,1.11) node[left = 15pt, below = 4pt]{\ti
     \begin{frame}
     % тук с каринка е по-добре ама ме мързи
       \frametitle{Hybrid A*}
-      \begin{algorithm}[H]
+      \tiny\begin{algorithm}[H]
         \caption{Hybrid A*}\label{has}
-        \begin{algorithmic}[1]
+        \begin{algorithmic}
           \Procedure{planPath}{$m, \mu, x_s, \theta_sm G$}
             \State{$n_s \leftarrow (\widetilde{x_s},\widetilde{\theta_s},x_s,0,h(x_s,G),-)$}
             \State{$O \leftarrow \{n_s\}$}
